@@ -1,0 +1,1 @@
+In this paper, we are testing the relationship between hate speech by US representatives and hate crimes in the US. The dataclean.Rmd file merges and cleans the hate incidents data coded by multiple coders.
