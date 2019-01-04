@@ -15,7 +15,8 @@ Open data collected by each coder:
 derek<-read.csv("Derek/DT_First1500.csv", header=TRUE) #First 1500
 
 #tate<-read.csv("Tate/Google_github_hatecrimes01.csv", header=TRUE) 
-tate<-read.csv("Tate/Google_github_hatecrimes2.csv", header=TRUE) #First 1419, 2000-5709
+#tate<-read.csv("Tate/Google_github_hatecrimes2.csv", header=TRUE) #First 1419, 2000-5709
+tate<-read.csv("Tate/Google_github_hatecrimes3.csv", header=TRUE)
 tate<-subset(tate, subset=!is.na(Hate.Incident))
 tate<-subset(tate, select=c("Date","Title","Hate.Incident","New.Incident","Day.of.Incident","Month.of.Incident","Year.of.Incident","Violent","Num.Victims","Num.Perp","Num.Deaths","Issue.Identity","Incident.City","Incident.State","Incident.Type","Inc.Intensity","Notes"))
 
@@ -79,7 +80,8 @@ mydata$Month.of.Incident.x[mydata$Title=="Virginia man charged with hate crime a
 mydata$Day.of.Incident.x[mydata$Title=="LASD Investigating Hate Crime in Malibu West"]<-mydata$Day.of.Incident.y[mydata$Title=="LASD Investigating Hate Crime in Malibu West"]<-12
 mydata$Month.of.Incident.x[mydata$Title=="LASD Investigating Hate Crime in Malibu West"]<-mydata$Month.of.Incident.y[mydata$Title=="LASD Investigating Hate Crime in Malibu West"]<-3
 
-
+mydata$Day.of.Incident.x[mydata$Title=="Far West Side man indicted for hate crime in desecration of mosque"]<-mydata$Day.of.Incident.y[mydata$Title=="Far West Side man indicted for hate crime in desecration of mosque"]
+mydata$Month.of.Incident.x[mydata$Title=="Far West Side man indicted for hate crime in desecration of mosque"]<-mydata$Month.of.Incident.y[mydata$Title=="Far West Side man indicted for hate crime in desecration of mosque"]
 
 mydata$match_city<-as.numeric(mydata$Incident.City.x==mydata$Incident.City.y)
 mydata$match_month<-as.numeric(as.character(mydata$Month.of.Incident.x)==as.character(mydata$Month.of.Incident.y))
@@ -175,7 +177,7 @@ newdata1$numperp<-disagree1_city$Num.Perp.y
 newdata1$intensity<-disagree1_city$Inc.Intensity.y
 newdata1$notes<-paste(disagree1_city$Notes.x,disagree1_city$Notes.y)
 
-write.csv(newdata1, "test1.csv", row.names = FALSE)
+#write.csv(newdata1, "CleanData/test1.csv", row.names = FALSE)
 #Date<-paste(as.character(newdata1$day),as.character(newdata1$month),as.character(newdata1$year),sep="/")
 #newdata1$date<-as.Date(Date, "%d/%m/%Y")
 #newdata1<-newdata[order(newdata1$date),]
@@ -271,7 +273,7 @@ newdata_all$notes<-" "
 newdata_all$notes[newdata_all$Title=="First-degree murder charge filed in possible hate crime shooting at Olathe's Austins bar"]<-"duplicate"
 newdata_all$notes[newdata_all$Title=="Umbrella-wielding bigot clobbers Hispanic woman in Queens after yelling: 'Get the f--k out of my country!'"]<-"umbrella attack"
 newdata_all$notes[newdata_all$Title=="NYPD: Subway Rider Punched In The Face & Told To 'Go Back' To Mexico In Possible Hate Crime"]<-"punching on J train"
-newdata_all$notes[newdata_all$Title=="Cops Say This Man Broke Subway Rider's Nose, Told Him 'Go Back To Your Country"]<-"duplicate"
+newdata_all$notes[newdata_all$Title=="Cops Say This Man Broke Subway Rider's Nose, Told Him 'Go Back To Your Country'"]<-"duplicate"
 newdata_all$notes[newdata_all$Title=="OCC student charged with hate crime"]<-"carving swastika into vehicle"
 newdata_all$notes[newdata_all$Title=="Police investigating apparent anti-semitic hate crime at UC Hastings dorm"]<-"mezuzah burning"
 newdata_all$notes[newdata_all$Title=="DA: Junction City standoff being investigated as hate crime - WAOW - Newsline 9, Wausau News, Weather, Sports"]<-"duplicate"
@@ -283,7 +285,7 @@ newdata_all$notes[newdata_all$Title=="Arrest made in 'You live in Trump country 
 newdata_all<-subset(newdata_all, notes!="duplicate")
 
 
-write.csv(newdata_all, "test.csv", row.names = FALSE)
+write.csv(newdata_all, "CleanData/test.csv", row.names = FALSE)
 
 #disagree1_any<-disagree1_any[, order(names(disagree1_any))]
 #disagree1_any<-disagree1_any[order( disagree1_any$Incident.City.x),]
@@ -512,8 +514,9 @@ newdata_all1$notes[newdata_all1$Title=="Homeless Man Busted for Threatening to '
 
 newdata_all1$notes[newdata_all1$Title=="Accused Portland killer shows no remorse in court"]<-"Jeremy Joseph Christian"
 
-newdata_all1$notes[newdata_all1$Title %in% c("Girl tearfully thanks men who lost lives defending her","Good Morning, News: Hate Crime Suspect's Crazy Arraignment, and Hero's Mom Writes Letter to Trump","Here's The Heartbreaking Letter A Portland Victim's Mom Wrote To Trump","Muslims Raise Over Half A Million Dollars For Portland Victims","Portland attacker pledged to slay Trump, Clinton in name of Nordic god","Portland stabbing recalls 1988 murder of Ethiopian grad student","Portland stabbing suspect shouts 'you've got no safe place!' at court appearance","Portland stabbing suspect: 'You call it terrorism, I call it patriotism!'","Portland Stabbings Are Reminder of Oregon's Long History of White Supremacy","Portland victim's mother appeals to Trump to condemn acts of hate","Portland Stabbing Survivor Calls Out City's "White Savior Complex"
-")]<-"duplicate"
+newdata_all1$notes[newdata_all1$Title %in% c("Girl tearfully thanks men who lost lives defending her","Good Morning, News: Hate Crime Suspect's Crazy Arraignment, and Hero's Mom Writes Letter to Trump","Here's The Heartbreaking Letter A Portland Victim's Mom Wrote To Trump","Muslims Raise Over Half A Million Dollars For Portland Victims","Portland attacker pledged to slay Trump, Clinton in name of Nordic god","Portland stabbing recalls 1988 murder of Ethiopian grad student","Portland stabbing suspect shouts 'you've got no safe place!' at court appearance","Portland stabbing suspect: 'You call it terrorism, I call it patriotism!'","Portland Stabbings Are Reminder of Oregon's Long History of White Supremacy","Portland victim's mother appeals to Trump to condemn acts of hate")]<-"duplicate"
+
+newdata_all1$notes[newdata_all1$URL=="https://www.vibe.com/2017/06/portland-stabbing-survivor-white-savior/"]<-"duplicate"
 
 newdata_all1$notes[newdata_all1$Title=="SLO Mayor targeted in hate crime vandalism"]<-" "
 
@@ -525,8 +528,33 @@ Date<-paste(as.character(newdata_all1$day),as.character(newdata_all1$month),as.c
 newdata_all1$date<-as.Date(Date, "%d/%m/%Y")
 newdata_all1<-newdata_all1[order(newdata_all1$date),]
 
-write.csv(newdata_all1, "test2.csv", row.names = FALSE)
+write.csv(newdata_all1, "CleanData/test2.csv", row.names = FALSE)
 
+
+```
+Combine Tate and Ike: 
+
+```{r}
+mydata<-merge(ike, tate, by=c("Title","Date"), all.x=TRUE)
+
+#Clean up city names:
+mydata$Incident.City.x<-as.character(mydata$Incident.City.x)
+mydata$Incident.City.y<-as.character(mydata$Incident.City.y)
+
+#Trailing spaces:
+mydata$Incident.City.x<-trimws(mydata$Incident.City.x, which = c("both"))
+mydata$Incident.City.y<-trimws(mydata$Incident.City.y, which = c("both"))
+
+mydata$Year.of.Incident.x<-as.numeric(as.character(mydata$Year.of.Incident.x))
+mydata$Year.of.Incident.y<-as.numeric(as.character(mydata$Year.of.Incident.y))
+mydata$Day.of.Incident.x<-as.numeric(as.character(mydata$Day.of.Incident.x))
+mydata$Day.of.Incident.y<-as.numeric(as.character(mydata$Day.of.Incident.y))
+mydata$Month.of.Incident.x<-as.numeric(as.character(mydata$Month.of.Incident.x))
+mydata$Month.of.Incident.y<-as.numeric(as.character(mydata$Month.of.Incident.y))
+mydata$Notes.x<-as.character(mydata$Notes.x)
+mydata$Notes.y<-as.character(mydata$Notes.y)
+
+write.csv(mydata, "CleanData/test.csv", row.names = FALSE)
 
 ```
 
