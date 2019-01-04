@@ -23,7 +23,7 @@ tate<-subset(tate, select=c("Date","Title","Hate.Incident","New.Incident","Day.o
 sara<-read.csv("Sara/google_github_hatecrimes_sara.csv", header=TRUE) #2001-2300
 sara<-subset(sara, subset=!is.na(Hate.Incident))
 
-ike<-read.csv("Ike/Barrash data.csv", header=TRUE) #4000-5761
+ike<-read.csv("Ike/data.csv", header=TRUE) #4000-5761
 ike<-subset(ike, subset=!is.na(Hate.Incident))
 
 
@@ -339,7 +339,6 @@ mydata$Notes.x[mydata$Title=="Victim of heinous racial attack laid to rest" & my
 
 mydata<-mydata[, order(names(mydata))]
 mydata<-mydata[order(mydata$Incident.City.x),]
-#write.csv(mydata, "test1.csv", row.names = FALSE)
 
 mydata$match_city<-as.numeric(mydata$Incident.City.x==mydata$Incident.City.y)
 mydata$match_month<-as.numeric(mydata$Month.of.Incident.x==mydata$Month.of.Incident.y)
@@ -535,7 +534,11 @@ write.csv(newdata_all1, "CleanData/test2.csv", row.names = FALSE)
 Combine Tate and Ike: 
 
 ```{r}
-mydata<-merge(ike, tate, by=c("Title","Date"), all.x=TRUE)
+tate<-read.csv("Tate/Google_github_hatecrimes3.csv", header=TRUE) #reopen Tate's data to add the Incident.number variable
+tate<-subset(tate, subset=!is.na(Hate.Incident))
+colnames(tate)[1]<-"Incident.number" #create an incident id variable to help select relevant cases to merge
+ike<-ike[-(1:5),] #remove demo rows
+mydata<-merge(ike, tate[tate$Incident.number>3999 & tate$Incident.number<5762,], by=c("Incident.number"), all.x=TRUE)
 
 #Clean up city names:
 mydata$Incident.City.x<-as.character(mydata$Incident.City.x)
@@ -545,7 +548,7 @@ mydata$Incident.City.y<-as.character(mydata$Incident.City.y)
 mydata$Incident.City.x<-trimws(mydata$Incident.City.x, which = c("both"))
 mydata$Incident.City.y<-trimws(mydata$Incident.City.y, which = c("both"))
 
-mydata$Year.of.Incident.x<-as.numeric(as.character(mydata$Year.of.Incident.x))
+mydata$Year.of.Incident.x<-as.numeric(as.character(mydata$Year.of.Incident.x))+2000
 mydata$Year.of.Incident.y<-as.numeric(as.character(mydata$Year.of.Incident.y))
 mydata$Day.of.Incident.x<-as.numeric(as.character(mydata$Day.of.Incident.x))
 mydata$Day.of.Incident.y<-as.numeric(as.character(mydata$Day.of.Incident.y))
@@ -554,7 +557,70 @@ mydata$Month.of.Incident.y<-as.numeric(as.character(mydata$Month.of.Incident.y))
 mydata$Notes.x<-as.character(mydata$Notes.x)
 mydata$Notes.y<-as.character(mydata$Notes.y)
 
-write.csv(mydata, "CleanData/test.csv", row.names = FALSE)
+mydata<-mydata[, order(names(mydata))]
+mydata<-mydata[order(mydata$Incident.City.x),]
+
+#Clean up some cases:
+mydata$Day.of.Incident.x[mydata$Title.x=="Albany officials call graffiti outside condo a hate crime"]<-mydata$Day.of.Incident.y[mydata$Title.x=="Albany officials call graffiti outside condo a hate crime"]<-21
+
+mydata$Day.of.Incident.x[mydata$Incident.number==4989 | mydata$Incident.number==4997]<-mydata$Day.of.Incident.y[mydata$Incident.number==4989 | mydata$Incident.number==4997]<-17 #Free Dylann Roof — I hate n**gers': Hate crime suspects tag U of Michigan with racist graffiti
+
+mydata$Day.of.Incident.x[mydata$Incident.number %in% c("4637","4638","4791","4794","4795","4796","4799","4865")]<-mydata$Day.of.Incident.y[mydata$Incident.number %in% c("4745","4747","4791","4794","4795","4796","4799","4865")]<-12 #Police think 2 Louisiana slayings likely racially motivated
+
+mydata$Day.of.Incident.x[mydata$Incident.number %in% c("4637","4638","4644")]<-mydata$Day.of.Incident.y[mydata$Incident.number %in% c("4637","4638","4644")]<-10 #Bellevue police investigating suspected hate crime in Bellevue
+
+mydata$Day.of.Incident.x[mydata$Incident.number==5609]<-mydata$Day.of.Incident.y[mydata$Incident.number==5609]<-22 #“Small riot” breaks out after racial tensions in Buffalo, KC Star says
+
+mydata$Day.of.Incident.x[mydata$Incident.number %in% c("4806","4807","4808","4812","4814","4827","4828","4831")]<-mydata$Day.of.Incident.y[mydata$Incident.number %in% "4806","4807","4808","4812","4814","4827","4828","4831"]<-18 #Castro Valley school truck vandalized with racist graffiti
+
+mydata$Notes.x[mydata$Incident.number==5195]<-mydata$Notes.y[mydata$Incident.number==5195]<-"Jacob Nicely and Steven Page" #2 men face hate crime, battery charges
+
+mydata$Notes.x[mydata$Incident.number %in% c("4772","4919")]<-mydata$Notes.y[mydata$Incident.number %in% c("4772","4919")]<-"duplicate"
+
+mydata$Day.of.Incident.x[mydata$Incident.number %in% c("5195","4772","4919")]<-mydata$Day.of.Incident.y[mydata$Incident.number %in% c("5195","4772","4919")]<-16
+
+mydata$State.x[mydata$Incident.number %in% c("5195","4772","4919")]<-mydata$State.y[mydata$Incident.number %in% c("5195","4772","4919")]<-"Illinois"
+
+
+
+
+mydata$match_city<-as.numeric(mydata$Incident.City.x==mydata$Incident.City.y)
+mydata$match_month<-as.numeric(mydata$Month.of.Incident.x==mydata$Month.of.Incident.y)
+
+#Combine the data on which the coders agree:
+agree<-subset(mydata, subset=(match_city==1 & match_month==1))
+
+agree<-agree[, order(names(agree))]
+agree<-agree[order(agree$Incident.City.x),]
+
+agree<-subset(agree, subset=!is.na(Month.of.Incident.x))
+
+
+#Remove old incidents:
+agree<-subset(agree, subset=Year.of.Incident.x>2016)
+
+agree$match_day<-as.numeric(agree$Day.of.Incident.x==agree$Day.of.Incident.y)
+
+#Additional incidents found by rereading the stories:
+inc1<-cbind.data.frame(Incident.number=4745.2,
+                       Title="Baton Rouge man arrested for 'brutal murders' of two black people, police say.1",
+                       URL="https://www.washingtonpost.com/news/post-nation/wp/2017/09/19/baton-rouge-man-arrested-for-brutal-murders-of-two-black-people-police-say/",
+                       day=11,
+                       month=9,
+                       year=2017,
+                       city="Baton Rouge",
+                       state="Louisiana",
+                       type="shooting",
+                       issue="race",
+                       numdeaths=0,
+                       numvic="2",
+                       numperp="1",
+                       intensity= "3",
+                       notes="Kenneth James Gleason--Additional incident found in article")
+
+write.csv(agree, "CleanData/test1.csv", row.names = FALSE)
+
+
 
 ```
 
