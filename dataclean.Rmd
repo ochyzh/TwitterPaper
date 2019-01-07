@@ -337,6 +337,7 @@ mydata$Notes.x[mydata$Title=="Victim of heinous racial attack laid to rest" & my
 
 
 
+#Reorder
 mydata<-mydata[, order(names(mydata))]
 mydata<-mydata[order(mydata$Incident.City.x),]
 
@@ -544,9 +545,18 @@ mydata<-merge(ike, tate[tate$Incident.number>3999 & tate$Incident.number<5762,],
 mydata$Incident.City.x<-as.character(mydata$Incident.City.x)
 mydata$Incident.City.y<-as.character(mydata$Incident.City.y)
 
+
 #Trailing spaces:
 mydata$Incident.City.x<-trimws(mydata$Incident.City.x, which = c("both"))
 mydata$Incident.City.y<-trimws(mydata$Incident.City.y, which = c("both"))
+mydata$Incident.City.x<-gsub("(^[[:space:]]*)|([[:space:]]*$)", "", mydata$Incident.City.x)
+
+#utf8::utf8_print(unique(mydata$Incident.City.x), utf8 = FALSE)
+
+mydata$Incident.City.x[mydata$Incident.City.x=="New York City"]<-"New York"
+mydata$Incident.City.y[mydata$Incident.City.y=="New York City"]<-"New York"
+
+write.csv(mydata, "CleanData/test1.csv", row.names = FALSE)
 
 mydata$Year.of.Incident.x<-as.numeric(as.character(mydata$Year.of.Incident.x))+2000
 mydata$Year.of.Incident.y<-as.numeric(as.character(mydata$Year.of.Incident.y))
@@ -571,7 +581,7 @@ mydata$Day.of.Incident.x[mydata$Incident.number %in% c("4637","4638","4644")]<-m
 
 mydata$Day.of.Incident.x[mydata$Incident.number==5609]<-mydata$Day.of.Incident.y[mydata$Incident.number==5609]<-22 #“Small riot” breaks out after racial tensions in Buffalo, KC Star says
 
-mydata$Day.of.Incident.x[mydata$Incident.number %in% c("4806","4807","4808","4812","4814","4827","4828","4831")]<-mydata$Day.of.Incident.y[mydata$Incident.number %in% "4806","4807","4808","4812","4814","4827","4828","4831"]<-18 #Castro Valley school truck vandalized with racist graffiti
+mydata$Day.of.Incident.x[mydata$Incident.number %in% c("4806","4807","4808","4812","4814","4827","4828","4831")]<-mydata$Day.of.Incident.y[mydata$Incident.number %in% c("4806","4807","4808","4812","4814","4827","4828","4831")]<-18 #Castro Valley school truck vandalized with racist graffiti
 
 mydata$Notes.x[mydata$Incident.number==5195]<-mydata$Notes.y[mydata$Incident.number==5195]<-"Jacob Nicely and Steven Page" #2 men face hate crime, battery charges
 
@@ -580,6 +590,18 @@ mydata$Notes.x[mydata$Incident.number %in% c("4772","4919")]<-mydata$Notes.y[myd
 mydata$Day.of.Incident.x[mydata$Incident.number %in% c("5195","4772","4919")]<-mydata$Day.of.Incident.y[mydata$Incident.number %in% c("5195","4772","4919")]<-16
 
 mydata$State.x[mydata$Incident.number %in% c("5195","4772","4919")]<-mydata$State.y[mydata$Incident.number %in% c("5195","4772","4919")]<-"Illinois"
+
+mydata$Day.of.Incident.y[mydata$Incident.number %in% c("4895","4897","4906","4907","4908","4945")]<-21 #first of three incidents of CMPD investigating hate crime after Jewish family finds swastika on back window of home
+
+mydata$Day.of.Incident.y[mydata$Incident.number ==4722]<-15
+
+#VIDEO: East Bay Jewish community concerned over recent hate crimes, says they're connected to alt-right rally
+#Will code this as the Piedmont one and add the other two mentioned in the article as additional incidents.
+mydata$Day.of.Incident.x[mydata$Incident.number==4219]<-mydata$Day.of.Incident.y[mydata$Incident.number==4219]<-17
+mydata$Incident.City.x[mydata$Incident.number==4219]<-mydata$Incident.City.y[mydata$Incident.number==4219]<-"Piedmont"
+mydata$Incident.State.x[mydata$Incident.number==4219]<-mydata$Incident.State.y[mydata$Incident.number==4219]<-"California"
+
+
 
 
 
@@ -599,7 +621,95 @@ agree<-subset(agree, subset=!is.na(Month.of.Incident.x))
 #Remove old incidents:
 agree<-subset(agree, subset=Year.of.Incident.x>2016)
 
-agree$match_day<-as.numeric(agree$Day.of.Incident.x==agree$Day.of.Incident.y)
+newdata<-cbind.data.frame(Title=agree$Title.x,URL=agree$URL.x)
+newdata$Incident.number=agree$Incident.number
+newdata$day<-agree$Day.of.Incident.x
+newdata$month<-agree$Month.of.Incident.x
+newdata$year<-agree$Year.of.Incident.x
+newdata$type<-agree$Incident.Type.x
+newdata$issue<-agree$Issue.Identity.x
+newdata$city<-agree$Incident.City.x
+newdata$state<-agree$Incident.State.x
+newdata$numdeaths<-agree$Num.Deaths.x
+newdata$numvic<-agree$Num.Victims.x
+newdata$numperp<-agree$Num.Perp.x
+newdata$intensity<-agree$Inc.Intensity.x
+newdata$notes<-paste(agree$Notes.x,agree$Notes.y)
+
+newdata<-newdata[, order(names(newdata))]
+newdata<-newdata[order(newdata$city),]
+
+#Combine the data on which the coders disagree:
+disagree<-subset(mydata, subset=!(match_city==1 & match_month==1))
+
+#Cases where the coders agree that it was a hate incident but disagree on city or month:
+disagree1<-subset(disagree, subset=(Year.of.Incident.x==2017 | Year.of.Incident.y==2017))
+
+#If they agree on the city:
+disagree1_city<-subset(disagree1, subset=(match_city==1))
+
+newdata1<-cbind.data.frame(Title=disagree1_city$Title.x,URL=disagree1_city$URL.x)
+newdata1$Incident.number=disagree1_city$Incident.number
+newdata1$day<-disagree1_city$Day.of.Incident.x
+newdata1$month<-disagree1_city$Month.of.Incident.x
+newdata1$year<-disagree1_city$Year.of.Incident.x
+newdata1$type<-disagree1_city$Incident.Type.x
+newdata1$issue<-disagree1_city$Issue.Identity.x
+newdata1$city<-disagree1_city$Incident.City.x
+newdata1$state<-disagree1_city$Incident.State.x
+newdata1$numdeaths<-disagree1_city$Num.Deaths.x
+newdata1$numvic<-disagree1_city$Num.Victims.x
+newdata1$numperp<-disagree1_city$Num.Perp.x
+newdata1$intensity<-disagree1_city$Inc.Intensity.x
+newdata1$notes<-paste(disagree1_city$Notes.x,disagree1_city$Notes.y)
+
+
+#If they agree on month, but disagree on city:
+disagree1_mo<-subset(disagree1, subset=(match_city==0 & match_month==1))
+#write.csv(disagree1_mo, "CleanData/test1.csv", row.names = FALSE)
+
+#Correct some cities:
+
+newdata2<-cbind.data.frame(Title=disagree1_mo$Title.x,URL=disagree1_mo$URL.x)
+newdata2$Incident.number=disagree1_mo$Incident.number
+newdata2$day<-disagree1_mo$Day.of.Incident.x
+newdata2$month<-disagree1_mo$Month.of.Incident.x
+newdata2$year<-disagree1_mo$Year.of.Incident.x
+newdata2$type<-disagree1_mo$Incident.Type.y
+newdata2$issue<-disagree1_mo$Issue.Identity.y
+newdata2$city<-disagree1_mo$Incident.City.y
+newdata2$state<-disagree1_mo$Incident.State.y
+newdata2$numdeaths<-disagree1_mo$Num.Deaths.y
+newdata2$numvic<-disagree1_mo$Num.Victims.y
+newdata2$numperp<-disagree1_mo$Num.Perp.y
+newdata2$intensity<-disagree1_mo$Inc.Intensity.y
+newdata2$notes<-paste(disagree1_mo$Notes.x,disagree1_mo$Notes.y)
+
+#Data on which the coders disagree:
+disagree1_any<-subset(disagree1, subset=(match_city==0 & match_month==0))
+
+
+#write.csv(disagree1_any, "test1.csv", row.names = FALSE)
+
+#Clean up:
+
+disagree1_any<-subset(disagree1_any, subset=Title=="Second noose found at a DC museum within a week")
+newdata3<-cbind.data.frame(Title=disagree1_any$Title,URL=disagree1_any$URL)
+newdata3$day<-disagree1_any$Day.of.Incident.x
+newdata3$month<-disagree1_any$Month.of.Incident.x
+newdata3$year<-disagree1_any$Year.of.Incident.x
+newdata3$type<-disagree1_any$Incident.Type.y
+newdata3$issue<-disagree1_any$Issue.Identity.y
+newdata3$city<-disagree1_any$Incident.City.y
+newdata3$state<-disagree1_any$Incident.State.y
+newdata3$numdeaths<-disagree1_any$Num.Deaths.y
+newdata3$numvic<-disagree1_any$Num.Victims.y
+newdata3$numperp<-disagree1_any$Num.Perp.y
+newdata3$intensity<-disagree1_any$Inc.Intensity.y
+newdata3$notes<-paste(disagree1_any$Notes.x,disagree1_any$Notes.y)
+
+
+
 
 #Additional incidents found by rereading the stories:
 inc1<-cbind.data.frame(Incident.number=4745.2,
@@ -617,6 +727,38 @@ inc1<-cbind.data.frame(Incident.number=4745.2,
                        numperp="1",
                        intensity= "3",
                        notes="Kenneth James Gleason--Additional incident found in article")
+
+inc1<-cbind.data.frame(Incident.number=4219.1,
+                       Title="VIDEO: East Bay Jewish community concerned over recent hate crimes, says they're connected to alt-right rally.1",
+                       URL="http://kron4.com/2017/08/23/video-east-bay-jewish-community-concerned-over-recent-hate-crimes-says-upcoming-alt-right-rally-is-to-blame/",
+                       day=16,
+                       month=8,
+                       year=2017,
+                       city="Alameda",
+                       state="California",
+                       type="vandalism",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp="na",
+                       intensity= 2,
+                       notes="Additional incident found in article")
+
+inc1<-cbind.data.frame(Incident.number=4219.2,
+                       Title="VIDEO: East Bay Jewish community concerned over recent hate crimes, says they're connected to alt-right rally.1",
+                       URL="http://kron4.com/2017/08/23/video-east-bay-jewish-community-concerned-over-recent-hate-crimes-says-upcoming-alt-right-rally-is-to-blame/",
+                       day=20,
+                       month=8,
+                       year=2017,
+                       city="Alameda",
+                       state="California",
+                       type="hate flyers",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp="na",
+                       intensity= 2,
+                       notes="Additional incident found in article")
 
 write.csv(agree, "CleanData/test1.csv", row.names = FALSE)
 
