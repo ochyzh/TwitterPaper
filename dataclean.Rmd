@@ -609,6 +609,36 @@ mydata$Day.of.Incident.x[mydata$Incident.number==4219]<-mydata$Day.of.Incident.y
 mydata$Incident.City.x[mydata$Incident.number==4219]<-mydata$Incident.City.y[mydata$Incident.number==4219]<-"Piedmont"
 mydata$Incident.State.x[mydata$Incident.number==4219]<-mydata$Incident.State.y[mydata$Incident.number==4219]<-"California"
 
+mydata$Notes.x[mydata$Incident.number==4457]<-"duplicate of 4219"
+
+#Police Investigate Discovery of Noose Outside Alameda High School as Hate Crime
+mydata$Day.of.Incident.x[mydata$Incident.number %in% c("4562","4566","4567","4580","4593","4817")]<-mydata$Day.of.Incident.y[mydata$Incident.number %in% c("4562","4566","4567","4580","4593","4817")]<-5
+mydata$Month.of.Incident.x[mydata$Incident.number %in% c("4562","4566","4567","4580","4593","4817")]<-mydata$Month.of.Incident.y[mydata$Incident.number %in% c("4562","4566","4567","4580","4593","4817")]<-9
+mydata$Incident.City.x[mydata$Incident.number %in% c("4562","4566","4567","4580","4593","4817")]<-mydata$Incident.City.y[mydata$Incident.number %in% c("4562","4566","4567","4580","4593","4817")]<-"Alameda"
+mydata$Incident.State.x[mydata$Incident.number %in% c("4562","4566","4567","4580","4593","4817")]<-mydata$Incident.State.y[mydata$Incident.number %in% c("4562","4566","4567","4580","4593","4817")]<-"California"
+mydata$Notes.x[mydata$Incident.number==4817]<-"duplicate of 4562"
+
+#Volcano Vista High students responsible for racist image on social media
+mydata$Day.of.Incident.x[mydata$Incident.number==4456]<-mydata$Day.of.Incident.y[mydata$Incident.number==4456]<-29
+mydata$Month.of.Incident.x[mydata$Incident.number==4456]<-mydata$Month.of.Incident.y[mydata$Incident.number==4456]<-8
+mydata$Incident.City.x[mydata$Incident.number==4456]<-mydata$Incident.City.y[mydata$Incident.number==4456]<-"Albuquerque"
+mydata$Incident.State.x[mydata$Incident.number==4456]<-mydata$Incident.State.y[mydata$Incident.number==4456]<-"New Mexico"
+
+#Noose incident at Amherst College not a hate crime, DA rules
+mydata$Day.of.Incident.x[mydata$Incident.number %in% c("5117","5126")]<-mydata$Day.of.Incident.y[mydata$Incident.number %in% c("5117","5126")]<-4
+mydata$Month.of.Incident.x[mydata$Incident.number %in% c("5117","5126")]<-mydata$Month.of.Incident.y[mydata$Incident.number %in% c("5117","5126")]<-9
+mydata$Incident.City.x[mydata$Incident.number %in% c("5117","5126")]<-mydata$Incident.City.y[mydata$Incident.number %in% c("5117","5126")]<-"Amherst"
+mydata$Incident.State.x[mydata$Incident.number %in% c("5117","5126")]<-mydata$Incident.State.y[mydata$Incident.number %in% c("5117","5126")]<-"Massachusetts"
+
+#Blotter: Suspects in Aubrey home invasion plead guilty to federal hate crimes
+
+mydata$Notes.x[mydata$Incident.number %in% c("4210","4335","4405")]<-"Nigel Garrett and Cameron Ajiduah"
+
+
+
+
+
+
 #NYC: Teen Charged With Hate Crime For Beating A Stranger For Being White
 mydata$Incident.City.x[mydata$Incident.number==5162]<-mydata$Incident.City.y[mydata$Incident.number==5162]<-"New York"
 
@@ -709,6 +739,7 @@ disagree1_any<-subset(disagree1, subset=(match_city!=1 & match_month!=1 | is.na(
 
 #Disagreements other than the additional incidents found by Ike:
 disagree1_any1<-disagree1_any[disagree1_any$Incident.number%%1==0,]
+write.csv(disagree1_any1, "CleanData/test1.csv", row.names = FALSE)
 
 
 newdata3<-cbind.data.frame(Title=disagree1_any1$Title.x,URL=disagree1_any1$URL.x)
@@ -728,7 +759,6 @@ newdata3$notes<-paste(disagree1_any1$Notes.x,disagree1_any$Notes.y)
 
 #Get additional incidents found in stories by Ike:
 disagree1_add<-disagree1_any[disagree1_any$Incident.number%%1!=0 | is.na(disagree1_any$Incident.number),]
-#write.csv(disagree1_add, "CleanData/test1.csv", row.names = FALSE)
 newdata4<-cbind.data.frame(Title=disagree1_add$Title.x,URL=disagree1_add$URL.x)
 newdata4$day<-disagree1_add$Day.of.Incident.x
 newdata4$month<-disagree1_add$Month.of.Incident.x
