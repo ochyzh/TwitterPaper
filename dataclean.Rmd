@@ -691,7 +691,7 @@ newdata<-newdata[order(newdata$city),]
 #Combine the data on which the coders disagree:
 disagree<-subset(mydata, subset=(match_city!=1 | match_month!=1 | is.na(match_month)))
 #Cases where the coders agree that it was a hate incident but disagree on city or month:
-disagree1<-subset(disagree, subset=(Year.of.Incident.x==2017 | Year.of.Incident.y==2017))
+disagree1<-subset(disagree, subset=(Year.of.Incident.x %in% c("2017","2018") | Year.of.Incident.y%in% c("2017","2018")))
 
 #test<-subset(mydata, subset=is.na(match_month))
 #write.csv(disagree, "CleanData/test1.csv", row.names = FALSE)
@@ -843,6 +843,35 @@ newdata_all2<-subset(newdata_all2, subset=as.numeric(is.na(stringr::str_extract(
 write.csv(newdata_all2, "CleanData/test1.csv", row.names = FALSE)
 
 
+
+```
+
+
+Data coded only by Tate:
+```{r}
+tate1<-tate[(tate$Incident.number>2300 & tate$Incident.number<4000) | tate$Incident.number>5761,]
+
+newdata<-cbind.data.frame(Title=tate1$Title,URL=tate1$URL)
+newdata$day<-as.numeric(as.character(tate1$Day.of.Incident))
+newdata$month<-as.numeric(as.character(tate1$Month.of.Incident))
+newdata$year<-as.numeric(as.character(tate1$Year.of.Incident))
+newdata$type<-tate1$Incident.Type
+newdata$issue<-tate1$Issue.Identity
+newdata$city<-trimws(as.character(tate1$Incident.City), which="both")
+newdata$state<-trimws(as.character(tate1$Incident.State), which="both")
+newdata$numdeaths<-tate1$Num.Deaths
+newdata$numvic<-tate1$Num.Victims
+newdata$numperp<-tate1$Num.Perp
+newdata$intensity<-tate1$Inc.Intensity
+newdata$notes<-as.character(tate1$Notes)
+newdata$inc.id<-tate1$Incident.number
+
+
+
+newdata<-newdata[, order(names(newdata))]
+newdata<-newdata[order(newdata$city),]
+
+write.csv(newdata, "CleanData/test1.csv", row.names = FALSE)
 
 ```
 
