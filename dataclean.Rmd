@@ -65,6 +65,7 @@ mydata$Day.of.Incident.x[mydata$Title=="Enraged Auburn man tells Mexican neighbo
 
 mydata$Day.of.Incident.x[mydata$Title=="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men"]<-mydata$Day.of.Incident.y[mydata$Title=="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men"]<-17
 mydata$Month.of.Incident.x[mydata$Title=="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men"]<-mydata$Month.of.Incident.y[mydata$Title=="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men"]<-1
+mydata$Notes.x[mydata$Title=="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men"]<-"Anthony Shelton, Nigel Garrett, Chancler Encalade and Cameron Ajiduah"
 
 mydata$Day.of.Incident.x[mydata$Title=="Junction City gunman to face hate crime charges"]<-mydata$Day.of.Incident.y[mydata$Title=="Junction City gunman to face hate crime charges"]<-6
 
@@ -631,10 +632,11 @@ mydata$Incident.City.x[mydata$Incident.number %in% c("5117","5126")]<-mydata$Inc
 mydata$Incident.State.x[mydata$Incident.number %in% c("5117","5126")]<-mydata$Incident.State.y[mydata$Incident.number %in% c("5117","5126")]<-"Massachusetts"
 
 #Blotter: Suspects in Aubrey home invasion plead guilty to federal hate crimes
+mydata$Day.of.Incident.x[mydata$Incident.number %in% c("4210","4335","4405")]<-mydata$Day.of.Incident.y[mydata$Incident.number %in% c("4210","4335","4405")]<-4
 
-mydata$Notes.x[mydata$Incident.number %in% c("4210","4335","4405")]<-"Nigel Garrett and Cameron Ajiduah"
+mydata$Notes.x[mydata$Incident.number %in% c("4210","4335","4405")]<-"duplicate Anthony Shelton, Nigel Garrett, Chancler Encalade and Cameron Ajiduah"
 
-
+mydata$Notes.x[mydata$Incident.number ==4746]<-"duplicate of Kenneth James Gleason"
 
 
 
@@ -668,7 +670,6 @@ agree<-subset(agree, subset=!is.na(Month.of.Incident.x))
 agree<-subset(agree, subset=Year.of.Incident.x==2017)
 
 newdata<-cbind.data.frame(Title=agree$Title.x,URL=agree$URL.x)
-newdata$Incident.number=agree$Incident.number
 newdata$day<-agree$Day.of.Incident.x
 newdata$month<-agree$Month.of.Incident.x
 newdata$year<-agree$Year.of.Incident.x
@@ -681,6 +682,8 @@ newdata$numvic<-agree$Num.Victims.x
 newdata$numperp<-agree$Num.Perp.x
 newdata$intensity<-agree$Inc.Intensity.x
 newdata$notes<-paste(agree$Notes.x,agree$Notes.y)
+newdata$inc.id<-agree$Incident.number
+
 
 newdata<-newdata[, order(names(newdata))]
 newdata<-newdata[order(newdata$city),]
@@ -698,7 +701,6 @@ disagree1<-subset(disagree, subset=(Year.of.Incident.x==2017 | Year.of.Incident.
 disagree1_city<-subset(disagree1, subset=(match_city==1))
 
 newdata1<-cbind.data.frame(Title=disagree1_city$Title.x,URL=disagree1_city$URL.x)
-newdata1$Incident.number=disagree1_city$Incident.number
 newdata1$day<-disagree1_city$Day.of.Incident.x
 newdata1$month<-disagree1_city$Month.of.Incident.x
 newdata1$year<-disagree1_city$Year.of.Incident.x
@@ -711,7 +713,7 @@ newdata1$numvic<-disagree1_city$Num.Victims.x
 newdata1$numperp<-disagree1_city$Num.Perp.x
 newdata1$intensity<-disagree1_city$Inc.Intensity.x
 newdata1$notes<-paste(disagree1_city$Notes.x,disagree1_city$Notes.y)
-
+newdata1$inc.id<-disagree1_city$Incident.number
 
 #If they agree on month, but disagree on city:
 disagree1_mo<-subset(disagree1, subset=(match_city==0 & match_month==1))
@@ -720,7 +722,6 @@ disagree1_mo<-subset(disagree1, subset=(match_city==0 & match_month==1))
 
 
 newdata2<-cbind.data.frame(Title=disagree1_mo$Title.x,URL=disagree1_mo$URL.x)
-newdata2$Incident.number=disagree1_mo$Incident.number
 newdata2$day<-disagree1_mo$Day.of.Incident.x
 newdata2$month<-disagree1_mo$Month.of.Incident.x
 newdata2$year<-disagree1_mo$Year.of.Incident.x
@@ -733,28 +734,31 @@ newdata2$numvic<-disagree1_mo$Num.Victims.x
 newdata2$numperp<-disagree1_mo$Num.Perp.x
 newdata2$intensity<-disagree1_mo$Inc.Intensity.x
 newdata2$notes<-paste(disagree1_mo$Notes.x,disagree1_mo$Notes.y)
+newdata2$inc.id<-disagree1_mo$Incident.number
 
 #Data on which the coders disagree:
 disagree1_any<-subset(disagree1, subset=(match_city!=1 & match_month!=1 | is.na(match_city) | is.na(match_month)))
 
 #Disagreements other than the additional incidents found by Ike:
 disagree1_any1<-disagree1_any[disagree1_any$Incident.number%%1==0,]
-write.csv(disagree1_any1, "CleanData/test1.csv", row.names = FALSE)
+disagree1_any1<-subset(disagree1_any1, subset=!(is.na(disagree1_any1$URL.x) & is.na(disagree1_any1$URL.y)))
+#write.csv(disagree1_any1, "CleanData/test1.csv", row.names = FALSE)
 
 
 newdata3<-cbind.data.frame(Title=disagree1_any1$Title.x,URL=disagree1_any1$URL.x)
-newdata3$day<-disagree1_any1$Day.of.Incident.y
-newdata3$month<-disagree1_any1$Month.of.Incident.y
+newdata3$day<-disagree1_any1$Day.of.Incident.x
+newdata3$month<-disagree1_any1$Month.of.Incident.x
 newdata3$year<-disagree1_any1$Year.of.Incident.x
 newdata3$type<-disagree1_any1$Incident.Type.x
 newdata3$issue<-disagree1_any1$Issue.Identity.x
-newdata3$city<-disagree1_any1$Incident.City.y
-newdata3$state<-disagree1_any1$Incident.State.y
+newdata3$city<-disagree1_any1$Incident.City.x
+newdata3$state<-disagree1_any1$Incident.State.x
 newdata3$numdeaths<-disagree1_any1$Num.Deaths.x
 newdata3$numvic<-disagree1_any1$Num.Victims.x
 newdata3$numperp<-disagree1_any1$Num.Perp.x
 newdata3$intensity<-disagree1_any1$Inc.Intensity.x
-newdata3$notes<-paste(disagree1_any1$Notes.x,disagree1_any$Notes.y)
+newdata3$notes<-disagree1_any1$Notes.x
+newdata3$inc.id<-disagree1_any1$Incident.number
 
 
 #Get additional incidents found in stories by Ike:
@@ -763,7 +767,7 @@ newdata4<-cbind.data.frame(Title=disagree1_add$Title.x,URL=disagree1_add$URL.x)
 newdata4$day<-disagree1_add$Day.of.Incident.x
 newdata4$month<-disagree1_add$Month.of.Incident.x
 newdata4$year<-disagree1_add$Year.of.Incident.x
-newdata4$type<-disagree1_add$Incident.Type
+newdata4$type<-disagree1_add$Incident.Type.x
 newdata4$issue<-disagree1_add$Issue.Identity.x
 newdata4$city<-disagree1_add$Incident.City.x
 newdata4$state<-disagree1_add$Incident.State.x
@@ -794,7 +798,7 @@ inc1<-cbind.data.frame(inc.id=4745.2,
                        intensity= "3",
                        notes="Kenneth James Gleason--Additional incident found in article")
 
-inc1<-cbind.data.frame(inc.id=4219.1,
+inc2<-cbind.data.frame(inc.id=4219.1,
                        Title="VIDEO: East Bay Jewish community concerned over recent hate crimes, says they're connected to alt-right rally.1",
                        URL="http://kron4.com/2017/08/23/video-east-bay-jewish-community-concerned-over-recent-hate-crimes-says-upcoming-alt-right-rally-is-to-blame/",
                        day=16,
@@ -810,7 +814,7 @@ inc1<-cbind.data.frame(inc.id=4219.1,
                        intensity= 2,
                        notes="Additional incident found in article")
 
-inc1<-cbind.data.frame(inc.id=4219.2,
+inc3<-cbind.data.frame(inc.id=4219.2,
                        Title="VIDEO: East Bay Jewish community concerned over recent hate crimes, says they're connected to alt-right rally.1",
                        URL="http://kron4.com/2017/08/23/video-east-bay-jewish-community-concerned-over-recent-hate-crimes-says-upcoming-alt-right-rally-is-to-blame/",
                        day=20,
@@ -826,7 +830,17 @@ inc1<-cbind.data.frame(inc.id=4219.2,
                        intensity= 2,
                        notes="Additional incident found in article")
 
-write.csv(agree, "CleanData/test1.csv", row.names = FALSE)
+newdata_all2<-rbind.data.frame(newdata,newdata1,newdata2, newdata3, newdata4,inc1,inc2,inc3)
+
+newdata_all2<-newdata_all2[, order(names(newdata_all2))]
+newdata_all2<-newdata_all2[order(newdata_all2$city),]
+
+#Clean up:
+newdata_all2$note[newdata_all2$inc.id %in% c("5035","4697")]<-""
+newdata_all2$note[newdata_all2$note=="duplucate"]<-"duplicate"
+newdata_all2<-subset(newdata_all2, subset=as.numeric(is.na(stringr::str_extract(newdata_all2$notes, "duplicate")))==1)
+
+write.csv(newdata_all2, "CleanData/test1.csv", row.names = FALSE)
 
 
 
