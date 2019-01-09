@@ -19,25 +19,27 @@ library(tools)
 Open data collected by each coder:
 ```{r}
 derek<-read.csv("Derek/DT_First1500.csv", header=TRUE) #First 1500
+colnames(derek)[1]<-"Incident.number" #create an incident id variable to help select relevant cases to merge
 
 #tate<-read.csv("Tate/Google_github_hatecrimes01.csv", header=TRUE) 
 #tate<-read.csv("Tate/Google_github_hatecrimes2.csv", header=TRUE) #First 1419, 2000-5709
 tate<-read.csv("Tate/Google_github_hatecrimes3.csv", header=TRUE)
 tate<-subset(tate, subset=!is.na(Hate.Incident))
-tate<-subset(tate, select=c("Date","Title","Hate.Incident","New.Incident","Day.of.Incident","Month.of.Incident","Year.of.Incident","Violent","Num.Victims","Num.Perp","Num.Deaths","Issue.Identity","Incident.City","Incident.State","Incident.Type","Inc.Intensity","Notes"))
+colnames(tate)[1]<-"Incident.number" #create an incident id variable to help select relevant cases to merge
 
 sara<-read.csv("Sara/google_github_hatecrimes_sara.csv", header=TRUE) #2001-2300
 sara<-subset(sara, subset=!is.na(Hate.Incident))
+colnames(sara)[1]<-"Incident.number" #create an incident id variable to help select relevant cases to merge
 
 ike<-read.csv("Ike/data.csv", header=TRUE) #4000-5761
-ike<-subset(ike, subset=!is.na(Hate.Incident))
+ike<-subset(ike, subset=!is.na(Hate.Incident)) #Ike already has an indicent number variable
 
 
 ```
 
 Combine Derek and Tate (first 700):
 ```{r}
-mydata<-merge(derek, tate, by=c("Title","Date"), all.x=TRUE)
+mydata<-merge(derek, tate, by=c("Incident.number"), all.x=TRUE)
 
 #Clean up city names:
 mydata$Incident.City.x<-as.character(mydata$Incident.City.x)
@@ -54,6 +56,8 @@ mydata$Day.of.Incident.y<-as.numeric(as.character(mydata$Day.of.Incident.y))
 mydata$Month.of.Incident.x<-as.numeric(as.character(mydata$Month.of.Incident.x))
 mydata$Month.of.Incident.y<-as.numeric(as.character(mydata$Month.of.Incident.y))
 
+mydata$Title<-mydata$Title.x
+mydata$URL<-mydata$URL.x
 
 #Clean up some entries:
 mydata$Day.of.Incident.x[mydata$Title=="Couple Refuses To Remove Racial Slur Graffiti From Home"]<-mydata$Day.of.Incident.y[mydata$Title=="Couple Refuses To Remove Racial Slur Graffiti From Home"]<-14
@@ -116,7 +120,8 @@ inc1<-cbind.data.frame(Title="Police investigate anti-Muslim signs placed at Bos
                        numvic="more than 1",
                        numperp="more than 1",
                        intensity= "2",
-                       notes="Additional incident found in article")
+                       notes="Additional incident found in article",
+                       inc.id= 17.1)
 
 newdata<-cbind.data.frame(Title=agree$Title,URL=agree$URL)
 newdata$day<-agree$Day.of.Incident.x
@@ -131,6 +136,7 @@ newdata$numvic<-agree$Num.Victims.y
 newdata$numperp<-agree$Num.Perp.y
 newdata$intensity<-agree$Inc.Intensity.y
 newdata$notes<-paste(agree$Notes.x,agree$Notes.y)
+newdata$inc.id<-agree$Incident.number
 
 newdata<-rbind(newdata,inc1)
 
@@ -182,11 +188,8 @@ newdata1$numvic<-disagree1_city$Num.Victims.y
 newdata1$numperp<-disagree1_city$Num.Perp.y
 newdata1$intensity<-disagree1_city$Inc.Intensity.y
 newdata1$notes<-paste(disagree1_city$Notes.x,disagree1_city$Notes.y)
+newdata1$inc.id<-disagree1_city$Incident.number
 
-#write.csv(newdata1, "CleanData/test1.csv", row.names = FALSE)
-#Date<-paste(as.character(newdata1$day),as.character(newdata1$month),as.character(newdata1$year),sep="/")
-#newdata1$date<-as.Date(Date, "%d/%m/%Y")
-#newdata1<-newdata[order(newdata1$date),]
 
 #If they agree on month, but disagree on city:
 disagree1_mo<-subset(disagree1, subset=(match_city==0 & match_month==1))
@@ -206,6 +209,7 @@ newdata2$numvic<-disagree1_mo$Num.Victims.y
 newdata2$numperp<-disagree1_mo$Num.Perp.y
 newdata2$intensity<-disagree1_mo$Inc.Intensity.y
 newdata2$notes<-paste(disagree1_mo$Notes.x,disagree1_mo$Notes.y)
+newdata2$inc.id<-disagree1_mo$Incident.number
 
 #Data on which the coders disagree:
 disagree1_any<-subset(disagree1, subset=(match_city==0 & match_month==0))
@@ -242,7 +246,7 @@ newdata3$numvic<-disagree1_any$Num.Victims.y
 newdata3$numperp<-disagree1_any$Num.Perp.y
 newdata3$intensity<-disagree1_any$Inc.Intensity.y
 newdata3$notes<-paste(disagree1_any$Notes.x,disagree1_any$Notes.y)
-
+newdata3$inc.id<-disagree1_any$Incident.number
 
 newdata_all<-rbind.data.frame(newdata,newdata1,newdata2, newdata3)
 
@@ -304,7 +308,7 @@ write.csv(newdata_all, "CleanData/test.csv", row.names = FALSE)
 Combine Tate and Sara (2000-2300):
 
 ```{r}
-mydata<-merge(sara, tate, by=c("Title","Date"), all.x=TRUE)
+mydata<-merge(sara, tate, by="Incident.number", all.x=TRUE)
 
 #Clean up city names:
 mydata$Incident.City.x<-as.character(mydata$Incident.City.x)
@@ -322,6 +326,8 @@ mydata$Month.of.Incident.x<-as.numeric(as.character(mydata$Month.of.Incident.x))
 mydata$Month.of.Incident.y<-as.numeric(as.character(mydata$Month.of.Incident.y))
 mydata$Notes.x<-as.character(mydata$Notes.x)
 mydata$Notes.y<-as.character(mydata$Notes.y)
+mydata$Title<-mydata$Title.x
+mydata$URL<-mydata$URL.x
 
 #Fix some cases:
 mydata$Day.of.Incident.x[mydata$Title=="Second noose found at a DC museum within a week"]<-mydata$Day.of.Incident.y[mydata$Title=="Second noose found at a DC museum within a week"]<-1
@@ -377,6 +383,7 @@ newdata$numvic<-agree$Num.Victims.y
 newdata$numperp<-agree$Num.Perp.y
 newdata$intensity<-agree$Inc.Intensity.y
 newdata$notes<-paste(agree$Notes.x,agree$Notes.y)
+newdata$inc.id<-agree$Incident.number
 
 newdata<-newdata[, order(names(newdata))]
 newdata<-newdata[order(newdata$city),]
@@ -404,10 +411,8 @@ newdata1$numvic<-disagree1_city$Num.Victims.y
 newdata1$numperp<-disagree1_city$Num.Perp.y
 newdata1$intensity<-disagree1_city$Inc.Intensity.y
 newdata1$notes<-paste(disagree1_city$Notes.x,disagree1_city$Notes.y)
+newdata1$inc.id<-disagree1_city$Incident.number
 
-#Date<-paste(as.character(newdata1$day),as.character(newdata1$month),as.character(newdata1$year),sep="/")
-#newdata1$date<-as.Date(Date, "%d/%m/%Y")
-#newdata1<-newdata[order(newdata1$date),]
 
 #If they agree on month, but disagree on city:
 disagree1_mo<-subset(disagree1, subset=(match_city==0 & match_month==1))
@@ -427,6 +432,7 @@ newdata2$numvic<-disagree1_mo$Num.Victims.y
 newdata2$numperp<-disagree1_mo$Num.Perp.y
 newdata2$intensity<-disagree1_mo$Inc.Intensity.y
 newdata2$notes<-paste(disagree1_mo$Notes.x,disagree1_mo$Notes.y)
+newdata2$inc.id<-disagree1_mo$Incident.number
 
 #Data on which the coders disagree:
 disagree1_any<-subset(disagree1, subset=(match_city==0 & match_month==0))
@@ -436,7 +442,7 @@ disagree1_any<-subset(disagree1, subset=(match_city==0 & match_month==0))
 
 #Clean up:
 
-disagree1_any<-subset(disagree1_any, subset==(match_city==0 & match_month==0))
+disagree1_any<-subset(disagree1_any, subset=(match_city==0 & match_month==0))
 newdata3<-cbind.data.frame(Title=disagree1_any$Title,URL=disagree1_any$URL)
 newdata3$day<-disagree1_any$Day.of.Incident.x
 newdata3$month<-disagree1_any$Month.of.Incident.x
@@ -450,7 +456,7 @@ newdata3$numvic<-disagree1_any$Num.Victims.y
 newdata3$numperp<-disagree1_any$Num.Perp.y
 newdata3$intensity<-disagree1_any$Inc.Intensity.y
 newdata3$notes<-paste(disagree1_any$Notes.x,disagree1_any$Notes.y)
-
+newdata3$inc.id<-disagree1_any$Incident.number
 
 #Additional Incidents Found by Re-Reading the Sources:
 inc1<-cbind.data.frame(Title="Another Noose Found At Construction Site: Five Noose Incidents In DC Area In Two Months.1",
@@ -466,7 +472,8 @@ inc1<-cbind.data.frame(Title="Another Noose Found At Construction Site: Five Noo
                        numvic="more than 1",
                        numperp="unknown",
                        intensity= "2",
-                       notes="noose at museum--Additional incident found in article")
+                       notes="noose at museum--Additional incident found in article",
+                       inc.id=2245.1)
 
 inc2<-cbind.data.frame(Title="Another Noose Found At Construction Site: Five Noose Incidents In DC Area In Two Months.2",
                        URL="http://www.inquisitr.com/4267279/another-noose-found-at-construction-site-5-noose-incidents-in-dc-area-in-two-months/",
@@ -481,7 +488,8 @@ inc2<-cbind.data.frame(Title="Another Noose Found At Construction Site: Five Noo
                        numvic="more than 1",
                        numperp="unknown",
                        intensity= "2",
-                       notes="second noose at museum--Additional incident found in article")
+                       notes="second noose at museum--Additional incident found in article",
+                       inc.id=2245.2)
 
 inc3<-cbind.data.frame(Title="Another Noose Found At Construction Site: Five Noose Incidents In DC Area In Two Months.3",
                        URL="http://www.inquisitr.com/4267279/another-noose-found-at-construction-site-5-noose-incidents-in-dc-area-in-two-months/",
@@ -496,7 +504,8 @@ inc3<-cbind.data.frame(Title="Another Noose Found At Construction Site: Five Noo
                        numvic="more than 1",
                        numperp="unknown",
                        intensity= "2",
-                       notes="noose at Phi Kappa Tau house--Additional incident found in article")
+                       notes="noose at Phi Kappa Tau house--Additional incident found in article",
+                       inc.id=2245.3)
 
 
 newdata_all1<-rbind.data.frame(newdata,newdata1,newdata2, newdata3, inc1,inc2,inc3)
@@ -534,7 +543,7 @@ Date<-paste(as.character(newdata_all1$day),as.character(newdata_all1$month),as.c
 newdata_all1$date<-as.Date(Date, "%d/%m/%Y")
 newdata_all1<-newdata_all1[order(newdata_all1$date),]
 
-write.csv(newdata_all1, "CleanData/test2.csv", row.names = FALSE)
+#write.csv(newdata_all1, "CleanData/test2.csv", row.names = FALSE)
 
 
 ```
@@ -833,12 +842,16 @@ inc3<-cbind.data.frame(inc.id=4219.2,
 newdata_all2<-rbind.data.frame(newdata,newdata1,newdata2, newdata3, newdata4,inc1,inc2,inc3)
 
 newdata_all2<-newdata_all2[, order(names(newdata_all2))]
-newdata_all2<-newdata_all2[order(newdata_all2$city),]
+#newdata_all2<-newdata_all2[order(newdata_all2$city),]
 
 #Clean up:
 newdata_all2$note[newdata_all2$inc.id %in% c("5035","4697")]<-""
 newdata_all2$note[newdata_all2$note=="duplucate"]<-"duplicate"
 newdata_all2<-subset(newdata_all2, subset=as.numeric(is.na(stringr::str_extract(newdata_all2$notes, "duplicate")))==1)
+
+Date<-paste(as.character(newdata_all2$day),as.character(newdata_all2$month),as.character(newdata_all2$year),sep="/")
+newdata_all2$date<-as.Date(Date, "%d/%m/%Y")
+newdata_all2<-newdata_all2[order(newdata_all2$date,newdata_all2$city),]
 
 write.csv(newdata_all2, "CleanData/test1.csv", row.names = FALSE)
 
@@ -850,6 +863,8 @@ write.csv(newdata_all2, "CleanData/test1.csv", row.names = FALSE)
 Data coded only by Tate:
 ```{r}
 tate1<-tate[(tate$Incident.number>2300 & tate$Incident.number<4000) | tate$Incident.number>5761,]
+tate1<-tate1[tate1$Hate.Incident==1,]
+
 
 newdata<-cbind.data.frame(Title=tate1$Title,URL=tate1$URL)
 newdata$day<-as.numeric(as.character(tate1$Day.of.Incident))
@@ -869,7 +884,69 @@ newdata$inc.id<-tate1$Incident.number
 
 
 newdata<-newdata[, order(names(newdata))]
-newdata<-newdata[order(newdata$city),]
+newdata<-newdata[newdata$year>2016,]
+
+#Clean up:
+newdata$notes[newdata$inc.id=7681]<-"Michael Ron David Kadar"
+newdata$day[newdata$inc.id=7681]<-4 #Florida: threat to Chabad South Orlando school
+
+
+inc1<-cbind.data.frame(inc.id=7681.1,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.1",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=4,
+                       month=1,
+                       year=2017,
+                       city="Orlando",
+                       state="Florida",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Additional incident found in article, Jewish Academy")
+
+inc2<-cbind.data.frame(inc.id=7681.2,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.1",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=5,
+                       month=1,
+                       year=2017,
+                       city="Orlando",
+                       state="Florida",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Additional incident found in article, Chabad South again")
+
+inc2<-cbind.data.frame(inc.id=7681.3,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.1",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=5,
+                       month=1,
+                       year=2017,
+                       city="Orlando",
+                       state="Florida",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Additional incident found in article, Tampa JCC Preschool")
+
+
+
+#newdata<-subset(newdata, subset=as.numeric(is.na(stringr::str_extract(newdata$notes, "duplicate")))==1)
+
+Date<-paste(as.character(newdata$day),as.character(newdata$month),as.character(newdata$year),sep="/")
+newdata$date<-as.Date(Date, "%d/%m/%Y")
+newdata<-newdata[order(newdata$date,newdata$city),]
+
 
 write.csv(newdata, "CleanData/test1.csv", row.names = FALSE)
 
