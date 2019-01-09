@@ -887,8 +887,8 @@ newdata<-newdata[, order(names(newdata))]
 newdata<-newdata[newdata$year>2016,]
 
 #Clean up:
-newdata$notes[newdata$inc.id=7681]<-"Michael Ron David Kadar"
-newdata$day[newdata$inc.id=7681]<-4 #Florida: threat to Chabad South Orlando school
+newdata$notes[newdata$inc.id==7681]<-"Michael Ron David Kadar"
+newdata$day[newdata$inc.id==7681]<-4 #Florida: threat to Chabad South Orlando school
 
 
 inc1<-cbind.data.frame(inc.id=7681.1,
@@ -905,10 +905,10 @@ inc1<-cbind.data.frame(inc.id=7681.1,
                        numvic=0,
                        numperp=1,
                        intensity= 2,
-                       notes="Additional incident found in article, Jewish Academy")
+                       notes="Add inc, Michael Ron David Kadar, Jewish Academy")
 
 inc2<-cbind.data.frame(inc.id=7681.2,
-                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.1",
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.2",
                        URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
                        day=5,
                        month=1,
@@ -921,12 +921,60 @@ inc2<-cbind.data.frame(inc.id=7681.2,
                        numvic=0,
                        numperp=1,
                        intensity= 2,
-                       notes="Additional incident found in article, Chabad South again")
+                       notes="Add inc, Michael Ron David Kadar Chabad South again")
 
-inc2<-cbind.data.frame(inc.id=7681.3,
-                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.1",
+inc3<-cbind.data.frame(inc.id=7681.3,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.3",
                        URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
                        day=5,
+                       month=1,
+                       year=2017,
+                       city="Tampa",
+                       state="Florida",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Add inc, Michael Ron David Kadar, Tampa JCC Preschool North")
+
+inc4<-cbind.data.frame(inc.id=7681.4,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.4",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=5,
+                       month=1,
+                       year=2017,
+                       city="Tampa",
+                       state="Florida",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Add inc, Michael Ron David Kadar, Tampa JCC Preschool South")
+
+inc5<-cbind.data.frame(inc.id=7681.5,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.5",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=9,
+                       month=1,
+                       year=2017,
+                       city="Tampa",
+                       state="Florida",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Add inc, Michael Ron David Kadar, Tampa JCC Preschool South")
+
+inc6<-cbind.data.frame(inc.id=7681.6,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.6",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=9,
                        month=1,
                        year=2017,
                        city="Orlando",
@@ -937,18 +985,168 @@ inc2<-cbind.data.frame(inc.id=7681.3,
                        numvic=0,
                        numperp=1,
                        intensity= 2,
-                       notes="Additional incident found in article, Tampa JCC Preschool")
+                       notes="Add inc, Michael Ron David Kadar, Roth JCC")
+
+inc7<-cbind.data.frame(inc.id=7681.7,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.7",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=9,
+                       month=1,
+                       year=2017,
+                       city="Jacksonville",
+                       state="Florida",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Add inc, Michael Ron David Kadar, Jewish Comm Alliance")
+
+inc8<-cbind.data.frame(inc.id=7681.8,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.8",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=18,
+                       month=1,
+                       year=2017,
+                       city="Orlando",
+                       state="Florida",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Add inc, Michael Ron David Kadar, Roth JCC")
+
+inc9<-cbind.data.frame(inc.id=7681.9,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.9",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=16,
+                       month=2,
+                       year=2017,
+                       city="Orlando",
+                       state="Florida",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Add inc, Michael Ron David Kadar, Glenridge Middle School")
+
+inc10<-cbind.data.frame(inc.id=7681.10,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.10",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=16,
+                       month=2,
+                       year=2017,
+                       city="Orlando",
+                       state="Florida",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Add inc, Michael Ron David Kadar, airport")
+
+inc11<-cbind.data.frame(inc.id=7681.11,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.11",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=20,
+                       month=2,
+                       year=2017,
+                       city="Tampa",
+                       state="Florida",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Add inc, Michael Ron David Kadar, Tampa JCC Preschool")
+
+inc12<-cbind.data.frame(inc.id=7681.12,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.12",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=9,
+                       month=3,
+                       year=2017,
+                       city="Washington, D.C.",
+                       state="NA",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Add inc, Michael Ron David Kadar, Israeli Embassy")
+
+inc13<-cbind.data.frame(inc.id=7681.13,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.13",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=7,
+                       month=3,
+                       year=2017,
+                       city="Washington, D.C.",
+                       state="NA",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Add inc, Michael Ron David Kadar, Anti-Defamation League")
+
+inc14<-cbind.data.frame(inc.id=7681.14,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.14",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=3,
+                       month=1,
+                       year=2017,
+                       city="Athens",
+                       state="Georgia",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Add inc, Michael Ron David Kadar, U of G PD")
 
 
+inc15<-cbind.data.frame(inc.id=7681.15,
+                       Title="Man indicted for hate crime and threats to Jewish Community Center and cyberstalking.15",
+                       URL="http://www.wrbl.com/news/crime-watch/man-indicted-for-hate-crime-and-threats-to-jewish-community-center-and-cyberstalking/999050135",
+                       day=3,
+                       month=1,
+                       year=2017,
+                       city="Athens",
+                       state="Georgia",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp=1,
+                       intensity= 2,
+                       notes="Add inc, Michael Ron David Kadar, AK")
 
-#newdata<-subset(newdata, subset=as.numeric(is.na(stringr::str_extract(newdata$notes, "duplicate")))==1)
+newdata$notes[newdata$inc.id %in% c("2845","6327","6776","6553","2347","2341","5776","6226","5837","5765","5768")]<-""
+
+
+newdata<-subset(newdata, subset=as.numeric(is.na(stringr::str_extract(newdata$notes, "duplicate")))==1)
+newdata<-newdata[!is.na(newdata$city),]
 
 Date<-paste(as.character(newdata$day),as.character(newdata$month),as.character(newdata$year),sep="/")
 newdata$date<-as.Date(Date, "%d/%m/%Y")
 newdata<-newdata[order(newdata$date,newdata$city),]
 
+newdata<-cbind.data.frame(newdata,inc1,inc2,inc3,inc4,inc5,inc6,inc7,inc8,inc9,inc10,inc11,inc12,inc13,inc14,inc15)
 
-write.csv(newdata, "CleanData/test1.csv", row.names = FALSE)
+fulldata<-rbind.data.frame(newdata_all,newdata_all1, newdata_all2,newdata)
+
+write.csv(fulldata, "CleanData/test1.csv", row.names = FALSE)
 
 ```
 
