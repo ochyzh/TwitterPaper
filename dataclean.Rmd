@@ -55,6 +55,8 @@ mydata$Day.of.Incident.x<-as.numeric(as.character(mydata$Day.of.Incident.x))
 mydata$Day.of.Incident.y<-as.numeric(as.character(mydata$Day.of.Incident.y))
 mydata$Month.of.Incident.x<-as.numeric(as.character(mydata$Month.of.Incident.x))
 mydata$Month.of.Incident.y<-as.numeric(as.character(mydata$Month.of.Incident.y))
+mydata$Notes.x<-as.character(mydata$Notes.x)
+mydata$Notes.y<-as.character(mydata$Notes.y)
 
 mydata$Title<-mydata$Title.x
 mydata$URL<-mydata$URL.x
@@ -69,7 +71,8 @@ mydata$Day.of.Incident.x[mydata$Title=="Enraged Auburn man tells Mexican neighbo
 
 mydata$Day.of.Incident.x[mydata$Title=="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men"]<-mydata$Day.of.Incident.y[mydata$Title=="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men"]<-17
 mydata$Month.of.Incident.x[mydata$Title=="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men"]<-mydata$Month.of.Incident.y[mydata$Title=="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men"]<-1
-mydata$Notes.x[mydata$Title=="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men"]<-"Anthony Shelton, Nigel Garrett, Chancler Encalade and Cameron Ajiduah"
+mydata$Notes.x[mydata$Incident.number==1379]<-"Anthony Shelton, Nigel Garrett, Chancler Encalade and Cameron Ajiduah"
+mydata$Incident.City.x[mydata$Incident.number==1379]<-mydata$Incident.City.y[mydata$Incident.number==1379]<-"Frisco"
 
 mydata$Day.of.Incident.x[mydata$Title=="Junction City gunman to face hate crime charges"]<-mydata$Day.of.Incident.y[mydata$Title=="Junction City gunman to face hate crime charges"]<-6
 
@@ -120,8 +123,59 @@ inc1<-cbind.data.frame(Title="Police investigate anti-Muslim signs placed at Bos
                        numvic="more than 1",
                        numperp="more than 1",
                        intensity= "2",
-                       notes="Additional incident found in article",
+                       notes=as.character("Additional incident found in article"),
                        inc.id= 17.1)
+
+
+
+inc2<-cbind.data.frame(Title="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men.1",
+                       URL="http://www.nbcdfw.com/news/local/Four-Frisco-Men-Charged-with-Federal-Hate-Crimes-for-Targeting-Gay-Men-421945343.html",
+                       day=17,
+                       month=1,
+                       year=2017,
+                       city="Plato",
+                       state="Texas",
+                       type="home invasion",
+                       issue="LGBT",
+                       numdeaths=0,
+                       numvic=1,
+                       numperp=4,
+                       intensity=3,
+                       notes=as.character("add inc--Anthony Shelton, Nigel Garrett, Chancler Encalade and Cameron Ajiduah"),
+                       inc.id=1379.1)
+
+inc3<-cbind.data.frame(Title="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men.2",
+                       URL="http://www.nbcdfw.com/news/local/Four-Frisco-Men-Charged-with-Federal-Hate-Crimes-for-Targeting-Gay-Men-421945343.html",
+                       day=7,
+                       month=2,
+                       year=2017,
+                       city="Plato",
+                       state="Texas",
+                       type="home invasion",
+                       issue="LGBT",
+                       numdeaths=0,
+                       numvic=1,
+                       numperp=4,
+                       intensity=3,
+                       notes=as.character("add inc--Anthony Shelton, Nigel Garrett, Chancler Encalade and Cameron Ajiduah"),
+                       inc.id=1379.2)
+
+inc4<-cbind.data.frame(Title="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men.3",
+                       URL="http://www.nbcdfw.com/news/local/Four-Frisco-Men-Charged-with-Federal-Hate-Crimes-for-Targeting-Gay-Men-421945343.html",
+                       day=7,
+                       month=2,
+                       year=2017,
+                       city="Aubrey",
+                       state="Texas",
+                       type="home invasion",
+                       issue="LGBT",
+                       numdeaths=0,
+                       numvic=1,
+                       numperp=4,
+                       intensity=3,
+                       notes=as.character("add inc--Anthony Shelton, Nigel Garrett, Chancler Encalade and Cameron Ajiduah"),
+                       inc.id=1379.3)
+
 
 newdata<-cbind.data.frame(Title=agree$Title,URL=agree$URL)
 newdata$day<-agree$Day.of.Incident.x
@@ -135,41 +189,16 @@ newdata$numdeaths<-agree$Num.Deaths.y
 newdata$numvic<-agree$Num.Victims.y
 newdata$numperp<-agree$Num.Perp.y
 newdata$intensity<-agree$Inc.Intensity.y
-newdata$notes<-paste(agree$Notes.x,agree$Notes.y)
+newdata$notes<-as.character(paste(agree$Notes.x,agree$Notes.y))
 newdata$inc.id<-agree$Incident.number
-
-newdata<-rbind(newdata,inc1)
-
-#Date<-paste(as.character(newdata$day),as.character(newdata$month),as.character(newdata$year),sep="/")
-#newdata$date<-as.Date(Date, "%d/%m/%Y")
-
-#newdata<-newdata[order(newdata$date),]
 
 agree<-agree[, order(names(agree))]
 agree<-agree[order(agree$Month.of.Incident.x),]
 
-#write.csv(agree, "test.csv", row.names = FALSE)
-#write.csv(newdata, "test1.csv", row.names = FALSE)
-
 
 #Combine the data on which the coders disagree:
 disagree<-subset(mydata, subset=(match_city!=1 | match_month!=1 | is.na(match_month)))
-#write.csv(disagree, "test1.csv", row.names = FALSE)
 
-#disagree$Notes.x<-tolower(disagree$Notes.x)
-#disagree$Notes.y<-tolower(disagree$Notes.y)
-#disagree$Notes.y[disagree$Notes.y=="not in us"]<-"international story"
-#disagree$Notes.y[disagree$Notes.y=="not in usa"]<-"international story"
-
-#library(qualV)
-#disagree$reason<-sapply(seq_along(disagree$Notes.x), function(i)
-#    paste(LCS(strsplit(disagree$Notes.x[i], '')[[1]], strsplit(disagree$Notes.y[i], '')[[1]])$LCS,
-#          collapse = ""))
-
-#disagree<-subset(disagree, subset=!(reason=="duplicate" | reason=="ule" | reason=="iat" | reason=="international story" | reason=="dupliate"))
-
-#Cases where the coders agree that it was a hate incident but disagree on city or month:
-#disagree1<-subset(disagree, subset=(Hate.Incident.x==1 & Hate.Incident.y==1))
 disagree1<-subset(disagree, subset=(Year.of.Incident.x==2017 | Year.of.Incident.y==2017))
 
 #If they agree on the city:
@@ -187,7 +216,7 @@ newdata1$numdeaths<-disagree1_city$Num.Deaths.y
 newdata1$numvic<-disagree1_city$Num.Victims.y
 newdata1$numperp<-disagree1_city$Num.Perp.y
 newdata1$intensity<-disagree1_city$Inc.Intensity.y
-newdata1$notes<-paste(disagree1_city$Notes.x,disagree1_city$Notes.y)
+newdata1$notes<-as.character(paste(disagree1_city$Notes.x,disagree1_city$Notes.y))
 newdata1$inc.id<-disagree1_city$Incident.number
 
 
@@ -208,7 +237,7 @@ newdata2$numdeaths<-disagree1_mo$Num.Deaths.y
 newdata2$numvic<-disagree1_mo$Num.Victims.y
 newdata2$numperp<-disagree1_mo$Num.Perp.y
 newdata2$intensity<-disagree1_mo$Inc.Intensity.y
-newdata2$notes<-paste(disagree1_mo$Notes.x,disagree1_mo$Notes.y)
+newdata2$notes<-as.character(paste(disagree1_mo$Notes.x,disagree1_mo$Notes.y))
 newdata2$inc.id<-disagree1_mo$Incident.number
 
 #Data on which the coders disagree:
@@ -245,31 +274,15 @@ newdata3$numdeaths<-disagree1_any$Num.Deaths.y
 newdata3$numvic<-disagree1_any$Num.Victims.y
 newdata3$numperp<-disagree1_any$Num.Perp.y
 newdata3$intensity<-disagree1_any$Inc.Intensity.y
-newdata3$notes<-paste(disagree1_any$Notes.x,disagree1_any$Notes.y)
+newdata3$notes<-as.character(paste(disagree1_any$Notes.x,disagree1_any$Notes.y))
 newdata3$inc.id<-disagree1_any$Incident.number
 
-newdata_all<-rbind.data.frame(newdata,newdata1,newdata2, newdata3)
+
+newdata_all<-rbind.data.frame(newdata,newdata1,newdata2, newdata3, inc1, inc2, inc3, inc4)
 
 newdata_all<-newdata_all[, order(names(newdata_all))]
 newdata_all<-newdata_all[order(newdata_all$city),]
 
-#Clean up:
-#Olathe, Kansas:
-#newdata_all$day[newdata_all$Title=="FBI Investigating Deadly Bar Shootings of Indians as Possible Hate Crime"]<-22
-#newdata_all$month[newdata_all$Title=="FBI Investigating Deadly Bar Shootings of Indians as Possible Hate Crime"]<-2
-
-#Dallas, Texas:
-#newdata_all$day[newdata_all$Title=="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men"]<-17
-#newdata_all$month[newdata_all$Title=="Four Frisco Men Charged with Federal Hate Crimes for Targeting Gay Men"]<-1
-
-#Junction City, Wisconsin:
-#newdata_all$day[newdata_all$Title=="DA: Junction City standoff being investigated as hate crime - WAOW - Newsline 9, Wausau News, Weather, Sports"]<-6
-
-#Auburn, Alabama:
-
-
-
-#newdata_all<-subset(newdata_all, subset=!is.na(day))
 
 Date<-paste(as.character(newdata_all$day),as.character(newdata_all$month),as.character(newdata_all$year),sep="/")
 newdata_all$date<-as.Date(Date, "%d/%m/%Y")
@@ -295,12 +308,9 @@ newdata_all$notes[newdata_all$Title=="Arrest made in 'You live in Trump country 
 newdata_all<-subset(newdata_all, notes!="duplicate")
 
 
-write.csv(newdata_all, "CleanData/test.csv", row.names = FALSE)
+#write.csv(newdata_all, "CleanData/test.csv", row.names = FALSE)
 
-#disagree1_any<-disagree1_any[, order(names(disagree1_any))]
-#disagree1_any<-disagree1_any[order( disagree1_any$Incident.City.x),]
 
-#write.csv(disagree1_any, "test1.csv", row.names = FALSE)
 
 ```
 
@@ -845,8 +855,8 @@ newdata_all2<-newdata_all2[, order(names(newdata_all2))]
 #newdata_all2<-newdata_all2[order(newdata_all2$city),]
 
 #Clean up:
-newdata_all2$note[newdata_all2$inc.id %in% c("5035","4697")]<-""
-newdata_all2$note[newdata_all2$note=="duplucate"]<-"duplicate"
+newdata_all2$notes[newdata_all2$inc.id %in% c("5035","4697")]<-""
+newdata_all2$notes[newdata_all2$note=="duplucate"]<-"duplicate"
 newdata_all2<-subset(newdata_all2, subset=as.numeric(is.na(stringr::str_extract(newdata_all2$notes, "duplicate")))==1)
 
 Date<-paste(as.character(newdata_all2$day),as.character(newdata_all2$month),as.character(newdata_all2$year),sep="/")
@@ -1138,13 +1148,16 @@ newdata$notes[newdata$inc.id %in% c("2845","6327","6776","6553","2347","2341","5
 newdata<-subset(newdata, subset=as.numeric(is.na(stringr::str_extract(newdata$notes, "duplicate")))==1)
 newdata<-newdata[!is.na(newdata$city),]
 
+
+#newdata<-newdata[order(newdata$date,newdata$city),]
+
+newdata<-rbind.data.frame(newdata,inc1,inc2,inc3,inc4,inc5,inc6,inc7,inc8,inc9,inc10,inc11,inc12,inc13,inc14,inc15)
 Date<-paste(as.character(newdata$day),as.character(newdata$month),as.character(newdata$year),sep="/")
 newdata$date<-as.Date(Date, "%d/%m/%Y")
-newdata<-newdata[order(newdata$date,newdata$city),]
-
-newdata<-cbind.data.frame(newdata,inc1,inc2,inc3,inc4,inc5,inc6,inc7,inc8,inc9,inc10,inc11,inc12,inc13,inc14,inc15)
 
 fulldata<-rbind.data.frame(newdata_all,newdata_all1, newdata_all2,newdata)
+fulldata<-fulldata[order(fulldata$date,fulldata$city),]
+fulldata<-fulldata[fulldata$year>2016,]
 
 write.csv(fulldata, "CleanData/test1.csv", row.names = FALSE)
 
