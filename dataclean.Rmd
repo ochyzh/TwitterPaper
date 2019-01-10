@@ -23,16 +23,19 @@ colnames(derek)[1]<-"Incident.number" #create an incident id variable to help se
 
 #tate<-read.csv("Tate/Google_github_hatecrimes01.csv", header=TRUE) 
 #tate<-read.csv("Tate/Google_github_hatecrimes2.csv", header=TRUE) #First 1419, 2000-5709
-tate<-read.csv("Tate/Google_github_hatecrimes3.csv", header=TRUE)
-tate<-subset(tate, subset=!is.na(Hate.Incident))
+
+tate<-read.csv("Tate/Google_github_hatecrimes4.csv", header=TRUE) #reopen Tate's data to add the Incident.number variable
+tate<-subset(tate, subset=(Hate.Incident==1))
 colnames(tate)[1]<-"Incident.number" #create an incident id variable to help select relevant cases to merge
+
 
 sara<-read.csv("Sara/google_github_hatecrimes_sara.csv", header=TRUE) #2001-2300
 sara<-subset(sara, subset=!is.na(Hate.Incident))
 colnames(sara)[1]<-"Incident.number" #create an incident id variable to help select relevant cases to merge
 
 ike<-read.csv("Ike/data.csv", header=TRUE) #4000-5761
-ike<-subset(ike, subset=!is.na(Hate.Incident)) #Ike already has an indicent number variable
+ike<-ike[-(1:5),] #remove demo rows
+ike<-subset(ike, subset=(Hate.Incident==1))
 
 
 ```
@@ -293,6 +296,7 @@ newdata_all<-subset(newdata_all, year==2017)
 
 #Manually remove duplicates:
 newdata_all$notes<-" "
+newdata_all$notes[newdata_all$inc.id==1379]<-"Anthony Shelton, Nigel Garrett, Chancler Encalade and Cameron Ajiduah"
 newdata_all$notes[newdata_all$Title=="First-degree murder charge filed in possible hate crime shooting at Olathe's Austins bar"]<-"duplicate"
 newdata_all$notes[newdata_all$Title=="Umbrella-wielding bigot clobbers Hispanic woman in Queens after yelling: 'Get the f--k out of my country!'"]<-"umbrella attack"
 newdata_all$notes[newdata_all$Title=="NYPD: Subway Rider Punched In The Face & Told To 'Go Back' To Mexico In Possible Hate Crime"]<-"punching on J train"
@@ -560,11 +564,6 @@ newdata_all1<-newdata_all1[order(newdata_all1$date),]
 Combine Tate and Ike: 
 
 ```{r}
-tate<-read.csv("Tate/Google_github_hatecrimes3.csv", header=TRUE) #reopen Tate's data to add the Incident.number variable
-tate<-subset(tate, subset=(Hate.Incident==1))
-colnames(tate)[1]<-"Incident.number" #create an incident id variable to help select relevant cases to merge
-ike<-ike[-(1:5),] #remove demo rows
-ike<-subset(ike, subset=(Hate.Incident==1))
 mydata<-merge(ike, tate[tate$Incident.number>3999 & tate$Incident.number<5762,], by=c("Incident.number"), all.x=TRUE)
 
 #Clean up city names:
@@ -863,7 +862,7 @@ Date<-paste(as.character(newdata_all2$day),as.character(newdata_all2$month),as.c
 newdata_all2$date<-as.Date(Date, "%d/%m/%Y")
 newdata_all2<-newdata_all2[order(newdata_all2$date,newdata_all2$city),]
 
-write.csv(newdata_all2, "CleanData/test1.csv", row.names = FALSE)
+#write.csv(newdata_all2, "CleanData/test1.csv", row.names = FALSE)
 
 
 
@@ -1158,6 +1157,64 @@ newdata$date<-as.Date(Date, "%d/%m/%Y")
 fulldata<-rbind.data.frame(newdata_all,newdata_all1, newdata_all2,newdata)
 fulldata<-fulldata[order(fulldata$date,fulldata$city),]
 fulldata<-fulldata[fulldata$year>2016,]
+
+#Clean up fulldata:
+
+
+fulldata$notes[fulldata$inc.id %in% c("4150","4153","4154","4180","4189","4196","4771","4774","4785","4800")]<-"duplicate" #Anthony Shelton, Nigel Garrett, Chancler Encalade and Cameron Ajiduah
+fulldata$notes[fulldata$inc.id==6]<-"Lauren Kirk-Coehlo"
+fulldata$notes[fulldata$inc.id==4544]<-"duplicate" #Lauren Kirk-Coehlo
+
+fulldata$notes[fulldata$inc.id==1176]<-"Jamie Hoffman"
+fulldata$notes[fulldata$inc.id==5103.24]<-"racist graffiti"
+
+fulldata$notes[fulldata$inc.id==515]<-"Marq Vincent Perez"
+fulldata$notes[fulldata$inc.id==2845]<-"duplicate" #Marq Vincent Perez
+
+fulldata$notes[fulldata$inc.id==5]<-"Dyrion Patterson and Jamyren Richard"
+
+fulldata$notes[fulldata$inc.id==172]<-"Todd Williams"
+fulldata$notes[fulldata$inc.id %in% c("4936","6327")]<-"duplicate Todd Williams"
+
+fulldata<-subset(fulldata, subset=as.numeric(is.na(stringr::str_extract(fulldata$notes, "duplicate")))==1)
+
+fulldata$notes[fulldata$inc.id==2]<-"" #Residents of NJ township receiving KKK promotional fliers
+
+fulldata$notes[fulldata$inc.id==5528]<-"Mount Carmel Cemetery"
+fulldata$notes[fulldata$inc.id==5540]<-"duplicate Mount Carmel Cemetery"
+
+fulldata$notes[fulldata$inc.id==5485]<-"Gerald Sloane Wallace"
+fulldata$notes[fulldata$inc.id %in% c("5462","5463","5464","5480")]<-"duplicate Gerald Sloane Wallace"
+
+fulldata$notes[fulldata$inc.id==82]<-"Adam Purinton"
+fulldata$notes[fulldata$inc.id==5642]<-"duplicate Adam Purinton"
+
+fulldata$notes[fulldata$inc.id==4134]<-"Daniel Volkers"
+fulldata$notes[fulldata$inc.id==4286]<-"duplicate Daniel Volkers"
+
+fulldata$notes[fulldata$inc.id==4715]<-"Loudal Baez"
+
+fulldata$notes[fulldata$inc.id==367]<-"Pasquale Vargas"
+
+fulldata$city[fulldata$city=="D.C." | fulldata$city=="D.C"]<-"Washington, D.c."
+fulldata$state[fulldata$city=="D.C"]<-"NA"
+
+fulldata$notes[fulldata$inc.id==5138]<-"Joseph Woznik"
+fulldata$notes[fulldata$inc.id %in% c("5158","5325","5456")]<-"duplicate Joseph Woznik"
+
+fulldata$notes[fulldata$inc.id==664]<-"Joseph Giaquinto"
+fulldata$notes[fulldata$inc.id==6776]<-"duplicate Joseph Giaquinto"
+
+fulldata$notes[fulldata$inc.id==783]<-"Rudy Arana"
+fulldata$notes[fulldata$inc.id==3427]<-"duplicate Rudy Arana"
+
+fulldata$notes[fulldata$inc.id==842]<-"Joe Ottomanelli"
+fulldata$notes[fulldata$inc.id==4818]<-"duplicate Joe Ottomanelli"
+
+
+
+
+fulldata<-unique(fulldata)
 
 write.csv(fulldata, "CleanData/test1.csv", row.names = FALSE)
 
