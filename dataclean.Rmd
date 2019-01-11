@@ -1159,8 +1159,11 @@ fulldata<-fulldata[order(fulldata$date,fulldata$city),]
 fulldata<-fulldata[fulldata$year>2016,]
 
 #Clean up fulldata:
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 66a8501818dc82cf980717d7e8f715a3d6c55460
 fulldata$notes[fulldata$inc.id %in% c("4150","4153","4154","4180","4189","4196","4771","4774","4785","4800")]<-"duplicate" #Anthony Shelton, Nigel Garrett, Chancler Encalade and Cameron Ajiduah
 fulldata$notes[fulldata$inc.id==6]<-"Lauren Kirk-Coehlo"
 fulldata$notes[fulldata$inc.id==4544]<-"duplicate" #Lauren Kirk-Coehlo
@@ -1169,6 +1172,7 @@ fulldata$notes[fulldata$inc.id==1176]<-"Jamie Hoffman"
 fulldata$notes[fulldata$inc.id==5103.24]<-"racist graffiti"
 
 fulldata$notes[fulldata$inc.id==515]<-"Marq Vincent Perez"
+<<<<<<< HEAD
 fulldata$notes[fulldata$inc.id==2845]<-"duplicate" #Marq Vincent Perez
 
 fulldata$notes[fulldata$inc.id==5]<-"Dyrion Patterson and Jamyren Richard"
@@ -1215,6 +1219,11 @@ fulldata$notes[fulldata$inc.id==4818]<-"duplicate Joe Ottomanelli"
 
 
 fulldata<-unique(fulldata)
+=======
+
+
+
+>>>>>>> 66a8501818dc82cf980717d7e8f715a3d6c55460
 
 write.csv(fulldata, "CleanData/test1.csv", row.names = FALSE)
 
