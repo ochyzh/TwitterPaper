@@ -1159,11 +1159,7 @@ fulldata<-fulldata[order(fulldata$date,fulldata$city),]
 fulldata<-fulldata[fulldata$year>2016,]
 
 #Clean up fulldata:
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 66a8501818dc82cf980717d7e8f715a3d6c55460
 fulldata$notes[fulldata$inc.id %in% c("4150","4153","4154","4180","4189","4196","4771","4774","4785","4800")]<-"duplicate" #Anthony Shelton, Nigel Garrett, Chancler Encalade and Cameron Ajiduah
 fulldata$notes[fulldata$inc.id==6]<-"Lauren Kirk-Coehlo"
 fulldata$notes[fulldata$inc.id==4544]<-"duplicate" #Lauren Kirk-Coehlo
@@ -1172,7 +1168,7 @@ fulldata$notes[fulldata$inc.id==1176]<-"Jamie Hoffman"
 fulldata$notes[fulldata$inc.id==5103.24]<-"racist graffiti"
 
 fulldata$notes[fulldata$inc.id==515]<-"Marq Vincent Perez"
-<<<<<<< HEAD
+
 fulldata$notes[fulldata$inc.id==2845]<-"duplicate" #Marq Vincent Perez
 
 fulldata$notes[fulldata$inc.id==5]<-"Dyrion Patterson and Jamyren Richard"
@@ -1200,7 +1196,7 @@ fulldata$notes[fulldata$inc.id==4715]<-"Loudal Baez"
 
 fulldata$notes[fulldata$inc.id==367]<-"Pasquale Vargas"
 
-fulldata$city[fulldata$city=="D.C." | fulldata$city=="D.C"]<-"Washington, D.c."
+fulldata$city[fulldata$city=="D.C." | fulldata$city=="D.C" | fulldata$city=="DC" | fulldata$city=="Washington D.c."]<-"Washington, D.c."
 fulldata$state[fulldata$city=="D.C"]<-"NA"
 
 fulldata$notes[fulldata$inc.id==5138]<-"Joseph Woznik"
@@ -1215,15 +1211,301 @@ fulldata$notes[fulldata$inc.id==3427]<-"duplicate Rudy Arana"
 fulldata$notes[fulldata$inc.id==842]<-"Joe Ottomanelli"
 fulldata$notes[fulldata$inc.id==4818]<-"duplicate Joe Ottomanelli"
 
+fulldata$notes[fulldata$inc.id==5427]<-"Damien Rodriguez"
+fulldata$notes[fulldata$inc.id %in% c("5444","5488","5103.19","5494.1","7725","5454")]<-"duplicate Damien Rodriguez"
+
+fulldata$notes[fulldata$inc.id==4307]<-"duplicate noose at Phi Kappa Tau"
+
+fulldata$notes[fulldata$inc.id==1250]<-"Joseph Leineweber"
+fulldata$notes[fulldata$inc.id==5103.17]<-"duplicate Joseph Leineweber"
+
+fulldata$notes[fulldata$inc.id==5139]<-"Conner Prout and John Havermann"
+fulldata$numperp[fulldata$inc.id==5139]<-2
+fulldata$notes[fulldata$inc.id %in% c("5215","5216","5217","6553")]<-"duplicate Conner Prout and John Havermann"
+
+fulldata$notes[fulldata$inc.id==2043]<-"Sean Urbanski"
+fulldata$notes[fulldata$inc.id %in% c("4471","5385","5494","2347")]<-"duplicate Sean Urbanski"
+
+fulldata$notes[fulldata$inc.id==5584]<-"Hadden Kennedy and Jodan Peck"
+fulldata$city[fulldata$inc.id==5584]<-"Goshen"
+fulldata$state[fulldata$inc.id==5584]<-"California"
+fulldata$day[fulldata$inc.id==5584]<-22
+fulldata$month[fulldata$inc.id==5584]<-10
+fulldata$numperp[fulldata$inc.id==5584]<-2
+fulldata$numvic[fulldata$inc.id==5584]<-1
+fulldata$numdeaths[fulldata$inc.id==5584]<-0
+fulldata$type[fulldata$inc.id==5584]<-"attempted murder"
+
+fulldata$notes[fulldata$inc.id==4159]<-"duplicate of 4156"
+
+fulldata$notes[fulldata$inc.id==3104]<-"Antoine Thomas"
+fulldata$Title[fulldata$inc.id==4479.1]<-"Man's jaw broken in possible anti-gay hate crime in Brooklyn"
+fulldata$URL[fulldata$inc.id==4479.1]<-"http://www.metroweekly.com/2017/08/mans-jaw-broken-anti-gay-hate-crime-brooklyn/"
+fulldata$notes[fulldata$inc.id==4479.1]<-"duplicate Antoine Thomas"
+
+fulldata$numperp[fulldata$inc.id==2190]<-1
+fulldata$numperp[fulldata$inc.id==2190]<-"a different train incident from Antoine Thomas"
+
+fulldata$notes[fulldata$inc.id %in% c("5622","5103.14")]<-"duplicate Jeremy Joseph Christian"
+
+fulldata$notes[fulldata$inc.id==5103.13]<-"duplicate of 2216"
+
+fulldata$notes[fulldata$inc.id==5256]<-"Tyler Austin"
+fulldata$notes[fulldata$inc.id==2304]<-"duplicate Tyler Austin"
+
+fulldata$notes[fulldata$inc.id==4599]<-"William “Billy” Boucher"
+
+fulldata$notes[fulldata$inc.id==5612]<-"duplicate of 5592"
+
+fulldata$notes[fulldata$inc.id==2574]<-"Sjarpe"
+
+fulldata$notes[fulldata$inc.id==5103.09]<-"middle-schooler harassed"
+
+fulldata$notes[fulldata$inc.id==2736]<-"Andre Marcel Siftsoff"
+fulldata$notes[fulldata$inc.id==2772]<-"duplicate Andre Marcel Siftsoff"
+
+fulldata$notes[fulldata$inc.id==5253]<-"Darwin Martinez Torres"
+fulldata$notes[fulldata$inc.id %in% c("5248","5266","5354")]<-"duplicate Darwin Martinez Torres"
+
+fulldata$notes[fulldata$inc.id %in% c("3270","3364")]<-"duplicate of 5035"
+
+fulldata$notes[fulldata$inc.id %in% c("5213","3798")]<-"duplicate of 5717"
+
+fulldata$notes[fulldata$inc.id==5433]<-"Vincent Randazzese"
+fulldata$city[fulldata$inc.id==5433]<-"Pittsford"
+fulldata$notes[fulldata$inc.id==5193]<-"duplicate Vincent Randazzese"
+
+fulldata$notes[fulldata$inc.id==5226]<-"nazi flyers"
+fulldata$city[fulldata$inc.id==5226]<-"East Greenville"
+fulldata$state[fulldata$inc.id==5226]<-"Pennsylvania"
+fulldata$day[fulldata$inc.id==5226]<-10
+fulldata$month[fulldata$inc.id==5226]<-10
+fulldata$intensity[fulldata$inc.id==5226]<-2
+fulldata$numdeaths[fulldata$inc.id==5226]<-0
+fulldata$numperp[fulldata$inc.id==5226]<-"at least 1"
+fulldata$numvic[fulldata$inc.id==5226]<-"na"
+fulldata$notes[fulldata$inc.id==5238]<-"duplicate of 5226"
 
 
+fulldata$notes[fulldata$inc.id==4458]<-"Arnold Moody"
+fulldata$notes[fulldata$inc.id %in% c("4459","4466","7589","7777")]<-"duplicates of Arnold Moody"
+
+fulldata$notes[fulldata$inc.id==4516]<-"Agustin Garcia"
+fulldata$notes[fulldata$inc.id==4512]<-"duplicate Agustin Garcia"
+
+
+fulldata$URL[fulldata$inc.id==4020]<-"https://www.readingeagle.com/ap/article/fear-resolve-and-more-security-at-charlottesvilles-temple"
+
+fulldata$notes[fulldata$inc.id==4386]<-"Daniel Borden"
+
+fulldata$notes[fulldata$inc.id==3682]<-"James Fields"
+fulldata$numvic[fulldata$inc.id==3682]<-41
+fulldata$notes[fulldata$inc.id==4039]<-"duplicate James Fields"
+
+fulldata$notes[fulldata$inc.id==5664]<-"Edward Evseev, Mark Barrancos,and Bruno Camacho"
+fulldata$notes[fulldata$inc.id %in% c("5647","5648","5649","5656","5670","5672","4492")]<-"duplicate Edward Evseev, Mark Barrancos,and Bruno Camacho"
+
+fulldata$notes[fulldata$inc.id %in% c("3998","4139")]<-"duplicates of 4219.1 and 4219.2"
+
+fulldata$notes[fulldata$inc.id ==4287]<-"international attack"
+
+fulldata$notes[fulldata$inc.id ==4406]<-"Gregory Brzoza"
+fulldata$notes[fulldata$inc.id %in% c("4417","4418","4126","4243")]<-"duplicate Gregory Brzoza"
+fulldata$notes[fulldata$inc.id ==4406]<-"Cleveland"
+
+fulldata$notes[fulldata$inc.id ==4177]<-"a man punched an old lady"
+
+fulldata$notes[fulldata$inc.id ==4186]<-"George Rissell"
+fulldata$notes[fulldata$inc.id ==4233]<-"duplicate George Rissell"
+
+fulldata$notes[fulldata$inc.id ==4151]<-"Alberto Campos"
+fulldata$notes[fulldata$inc.id ==4161]<-"duplicate Alberto Campos"
+
+fulldata$notes[fulldata$inc.id ==4370]<-"duplicate of 4372 and 4372.1"
+
+fulldata$notes[fulldata$inc.id ==4368]<-"Zachary Stanton"
+fulldata$notes[fulldata$inc.id ==5021]<-"duplicate Zachary Stanton"
+
+fulldata$notes[fulldata$inc.id ==4378]<-"Marion Forrest, Frankie Brouwer"
+fulldata$notes[fulldata$inc.id ==4431]<-"duplicate Marion Forrest, Frankie Brouwer"
+
+fulldata$notes[fulldata$inc.id %in% c("4377","4427","4479")]<-"duplicate of 4443"
+
+fulldata$notes[fulldata$inc.id ==5679]<- "Brianna Rae Brochu"
+fulldata$notes[fulldata$inc.id %in% c("5675","5751")]<- "duplicate Brianna Rae Brochu"
+
+fulldata$notes[fulldata$inc.id ==5040]<-"Michael Todd Birkl"
+fulldata$notes[fulldata$inc.id %in% c("5044","5046","5067","4421")]<-"duplicate Michael Todd Birkl"
+
+fulldata$notes[fulldata$inc.id ==4456]<-"Duplicate of 4470"
+
+fulldata$notes[fulldata$inc.id ==4546]<-"Artyom Manukyan"
+fulldata$notes[fulldata$inc.id %in% c("4529","4535","4773")]<-"duplicate Artyom Manukyan"
+
+fulldata$notes[fulldata$inc.id ==4955]<-"Andrew Vrba, Isis Schauer, Briana Calderas"
+fulldata$notes[fulldata$inc.id %in% c("4925","4927","4928","4930","4932","4934","4935","4937","4939","4940","4942","4943","4946","4948","4949","4950","4951","4953","4954","4984","4985","5045","5155")]<-"duplicate Andrew Vrba, Isis Schauer, Briana Calderas"
+
+fulldata$notes[fulldata$inc.id ==5117]<-"noose at Amherst College’s Pratt Field"
+fulldata$notes[fulldata$inc.id ==5126]<-"duplicate noose at Amherst College’s Pratt Field"
+
+fulldata$notes[fulldata$inc.id ==4776]<-"duplicate of 4560"
+
+fulldata$notes[fulldata$inc.id ==4826]<-"duplicate of 4724"
+
+fulldata$notes[fulldata$inc.id ==5199]<-"Rocky Lee Nibert and Delia Dawn Carr"
+fulldata$city[fulldata$inc.id ==5199]<-"Point Pleasant"
+fulldata$state[fulldata$inc.id ==5199]<-"West Virginia"
+fulldata$day[fulldata$inc.id ==5199]<-6
+fulldata$month[fulldata$inc.id ==5199]<-10
+fulldata$numvic[fulldata$inc.id ==5199]<-1
+
+fulldata$notes[fulldata$inc.id ==5201]<-"Jason Edward Cooper and Donald Lucas Prichard"
+fulldata$day[fulldata$inc.id ==5201]<-8
+fulldata$month[fulldata$inc.id ==5201]<-10
+fulldata$city[fulldata$inc.id ==5201]<-"Spokane"
+fulldata$state[fulldata$inc.id ==5201]<-"Washington"
+
+fulldata$notes[fulldata$inc.id ==5154]<-"Andrew Alan Carruthers"
+fulldata$notes[fulldata$inc.id %in% c("4834","5156","4801")]<-"duplicate Andrew Alan Carruthers"
+
+fulldata$notes[fulldata$inc.id ==5043]<-"duplicate of 5042"
+
+fulldata$notes[fulldata$inc.id ==4871]<-"Rachel Tuszynski"
+fulldata$notes[fulldata$inc.id ==5544]<-"duplicate Rachel Tuszynski"
+
+fulldata$notes[fulldata$inc.id %in% c("5059","5081")]<-"duplicate of 5038"
+
+fulldata$notes[fulldata$inc.id==5065]<-"Jeffery Masters"
+fulldata$notes[fulldata$inc.id %in% c("5070","5092","5700")]<-"duplicate of Jeffery Masters"
+
+fulldata$notes[fulldata$inc.id ==5479]<-"duplicate of 5457"
+
+fulldata$notes[fulldata$inc.id ==5198]<-"duplicate of 5201"
+
+fulldata$notes[fulldata$inc.id %in% c("5191","5666")]<-"duplicate of 5176"
+
+fulldata$notes[fulldata$inc.id ==5630]<-"duplicate of 6226"
+
+fulldata$notes[fulldata$inc.id ==5837]<-"duplicate of 5734"
+
+fulldata$notes[fulldata$inc.id ==5628]<- "Fortress of Hope Church"
+fulldata$notes[fulldata$inc.id %in% c("5636","5662")]<-"duplicate of Fortress of Hope Church"
+
+fulldata$notes[fulldata$inc.id ==5768]<- "duplicate of 5696"
+
+fulldata$city[fulldata$inc.id ==8052]<-"Sierra Blanca"
+fulldata$state[fulldata$inc.id ==8052]<-"Texas"
+fulldata$notes[fulldata$inc.id ==8052]<-"abuse of detainees"
+
+fulldata$day[fulldata$inc.id ==7992]<-10
+fulldata$notes[fulldata$inc.id ==7984]<-"duplicate of 7992 Virgin Mary statue"
+
+fulldata$notes[fulldata$inc.id ==8165]<-"duplicate of 8150"
+
+fulldata$notes[fulldata$inc.id ==5221]<-"David Harris, Jesse Harris and Austin Taggart"
+fulldata$notes[fulldata$inc.id %in% c("5222","5235")]<-"David Harris, Jesse Harris and Austin Taggart"
+fulldata$day[fulldata$inc.id ==5221]<-18
+fulldata$month[fulldata$inc.id ==5221]<-4
+
+fulldata$notes[fulldata$inc.id ==2229]<-"Yaacov Shemesh"
+fulldata$day[fulldata$inc.id ==2229]<-"from Dec 2016 to May 2017"
+
+fulldata$month[fulldata$inc.id ==2272]<-6
+fulldata$day[fulldata$inc.id ==2272]<-3
+
+fulldata$day[fulldata$inc.id ==1494]<-12
+
+fulldata$day[fulldata$inc.id ==4873]<-13
+
+fulldata$notes[fulldata$inc.id ==2056]<-"duplicate LeBron James"
+
+fulldata$day[fulldata$inc.id ==4463]<-16
+
+fulldata$city[fulldata$inc.id ==4379]<-"Brooklyn"
+fulldata$intensity[fulldata$inc.id ==4379]<-3
+fulldata$numvic[fulldata$inc.id ==4379]<-3
+fulldata$day[fulldata$inc.id ==4379]<-26
+fulldata$month[fulldata$inc.id ==4379]<-8
+fulldata$notes[fulldata$inc.id ==4380]<-"duplicate of 4379"
+
+fulldata$notes[fulldata$inc.id %in% c("4298","4344")]<-"duplicate of 7532"
+
+fulldata$notes[fulldata$inc.id ==2202]<-"duplicate of 2341"
+
+fulldata$state[fulldata$inc.id ==5054]<-"Wyoming"
+
+
+fulldata$day[fulldata$inc.id ==5270]<-28
+fulldata$day[fulldata$inc.id ==5270]<-9
+
+fulldata$day[fulldata$inc.id ==5355]<-"duplicate of 5270"
+
+fulldata$day[fulldata$inc.id ==5095]<-25
+
+fulldata$notes[fulldata$inc.id ==4964]<-"duplicate of 4957"
+fulldata$URL[fulldata$inc.id ==4957]<-"https://www.nbcnews.com/news/us-news/american-university-finds-confederate-flag-signs-posted-after-antiracist-presentation-n805266"
+fulldata$day[fulldata$inc.id ==4957]<-26
+fulldata$day[fulldata$inc.id ==4957]<-9
+fulldata$Title[fulldata$inc.id ==4957]<-"American University Finds Confederate Flag Signs Posted After Anti-Racist Presentation"
+
+
+inc1<-cbind.data.frame(inc.id=5644.1,
+                       Title="Jewelry store targeted in recent hate crimes.1",
+                       URL="http://nypost.com/2017/10/30/jewelry-store-targeted-in-recent-hate-crimes/",
+                       day=6,
+                       month=11,
+                       year=2017,
+                       city="New York",
+                       state="New York",
+                       type="threat",
+                       issue="religion",
+                       numdeaths=0,
+                       numvic=0,
+                       numperp="1at least 1",
+                       intensity= 1,
+                       notes="Add inc, Jewelry store")
+
+inc2<-cbind.data.frame(inc.id=1494.1,
+                       Title="UNH Police Seek Public Assistance In Solving Racial Crimes.1",
+                       URL="http://wokq.com/unh-police-seek-public-assistance-in-solving-racial-crimes/",
+                       day=13,
+                       month=5,
+                       year=2017,
+                       city="Durham",
+                       state="New Hampshire",
+                       type="threat",
+                       issue="race",
+                       numdeaths=0,
+                       numvic=1,
+                       numperp="at least 1",
+                       intensity= 3,
+                       notes="Add inc, a rock thrown at a minority student")
+
+inc3<-cbind.data.frame(inc.id=1494.2,
+                       Title="UNH Police Seek Public Assistance In Solving Racial Crimes.2",
+                       URL="http://wokq.com/unh-police-seek-public-assistance-in-solving-racial-crimes/",
+                       day=14,
+                       month=5,
+                       year=2017,
+                       city="Durham",
+                       state="New Hampshire",
+                       type="threat",
+                       issue="race",
+                       numdeaths=0,
+                       numvic=1,
+                       numperp="at least 1",
+                       intensity= 1,
+                       notes="Add inc, hate language")
+
+fulldata<-rbind.data.frame(fulldata,inc1, inc2, inc3)
+
+fulldata<-subset(fulldata, subset=as.numeric(is.na(stringr::str_extract(fulldata$notes, "duplicate")))==1)
+fulldata<-subset(fulldata, subset=as.numeric(is.na(stringr::str_extract(fulldata$notes, "duplucate")))==1)
+fulldata<-subset(fulldata, subset=as.numeric(is.na(stringr::str_extract(fulldata$notes, "international attack")))==1)
+Date<-paste(as.character(fulldata$day),as.character(fulldata$month),as.character(fulldata$year),sep="/")
+fulldata$date<-as.Date(Date, "%d/%m/%Y")
 
 fulldata<-unique(fulldata)
-=======
-
-
-
->>>>>>> 66a8501818dc82cf980717d7e8f715a3d6c55460
 
 write.csv(fulldata, "CleanData/test1.csv", row.names = FALSE)
 
