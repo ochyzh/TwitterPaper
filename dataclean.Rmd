@@ -227,7 +227,6 @@ newdata1$inc.id<-disagree1_city$Incident.number
 disagree1_mo<-subset(disagree1, subset=(match_city==0 & match_month==1))
 
 #Correct some cities:
-
 newdata2<-cbind.data.frame(Title=disagree1_mo$Title,URL=disagree1_mo$URL)
 newdata2$day<-disagree1_mo$Day.of.Incident.x
 newdata2$month<-disagree1_mo$Month.of.Incident.x
@@ -261,9 +260,6 @@ disagree1_any$Month.of.Incident.x[disagree1_any$Title=="Jewish cemetery vandaliz
 disagree1_any$Incident.City.y[disagree1_any$Title=="Jewish cemetery vandalized; Cuomo starts investigation"]<-disagree1_any$Incident.City.x[disagree1_any$Title=="Jewish cemetery vandalized; Cuomo starts investigation"]
 disagree1_any$Incident.State.y[disagree1_any$Title=="Jewish cemetery vandalized; Cuomo starts investigation"]<-disagree1_any$Incident.State.x[disagree1_any$Title=="Jewish cemetery vandalized; Cuomo starts investigation"]
 
-
-
-
 disagree1_any<-subset(disagree1_any, subset=Title %in% c("Far West Side man indicted for hate crime in desecration of mosque","Jewish cemetery vandalized; Cuomo starts investigation"))
 newdata3<-cbind.data.frame(Title=disagree1_any$Title,URL=disagree1_any$URL)
 newdata3$day<-disagree1_any$Day.of.Incident.x
@@ -286,11 +282,6 @@ newdata_all<-rbind.data.frame(newdata,newdata1,newdata2, newdata3, inc1, inc2, i
 newdata_all<-newdata_all[, order(names(newdata_all))]
 newdata_all<-newdata_all[order(newdata_all$city),]
 
-
-Date<-paste(as.character(newdata_all$day),as.character(newdata_all$month),as.character(newdata_all$year),sep="/")
-newdata_all$date<-as.Date(Date, "%d/%m/%Y")
-newdata_all<-newdata_all[order(newdata_all$date),]
-
 newdata_all<-unique(newdata_all)
 newdata_all<-subset(newdata_all, year==2017)
 
@@ -310,11 +301,6 @@ newdata_all$notes[newdata_all$Title=="Hate crime on Ocean Park Blvd."]<-"Henry L
 newdata_all$notes[newdata_all$Title=="Arrest made in 'You live in Trump country now' gay-bashing attack"]<-"Brandon Ray Davis"
 
 newdata_all<-subset(newdata_all, notes!="duplicate")
-
-
-#write.csv(newdata_all, "CleanData/test.csv", row.names = FALSE)
-
-
 
 ```
 
@@ -381,8 +367,6 @@ agree<-subset(agree, subset=!is.na(Month.of.Incident.x))
 
 #Remove old incidents:
 agree<-subset(agree, subset=Year.of.Incident.x>2016)
-#write.csv(agree, "test1.csv", row.names = FALSE)
-
 
 newdata<-cbind.data.frame(Title=agree$Title,URL=agree$URL)
 newdata$day<-agree$Day.of.Incident.y
@@ -552,14 +536,6 @@ newdata_all1$notes[newdata_all1$Title=="SLO Mayor targeted in hate crime vandali
 newdata_all1$notes<-trimws(newdata_all1$notes, which = c("both"))
 newdata_all1<-subset(newdata_all1, subset=notes!="duplicate")
 
-
-Date<-paste(as.character(newdata_all1$day),as.character(newdata_all1$month),as.character(newdata_all1$year),sep="/")
-newdata_all1$date<-as.Date(Date, "%d/%m/%Y")
-newdata_all1<-newdata_all1[order(newdata_all1$date),]
-
-#write.csv(newdata_all1, "CleanData/test2.csv", row.names = FALSE)
-
-
 ```
 Combine Tate and Ike: 
 
@@ -570,20 +546,15 @@ mydata<-merge(ike, tate[tate$Incident.number>3999 & tate$Incident.number<5762,],
 mydata$Incident.City.x<-as.character(mydata$Incident.City.x)
 mydata$Incident.City.y<-as.character(mydata$Incident.City.y)
 
-
 #Trailing spaces:
 mydata$Incident.City.x<-trimws(mydata$Incident.City.x, which = c("both"))
 mydata$Incident.City.y<-trimws(mydata$Incident.City.y, which = c("both"))
 mydata$Incident.City.x<-gsub("(^[[:space:]]*)|([[:space:]]*$)", "", mydata$Incident.City.x)
 
-#utf8::utf8_print(unique(mydata$Incident.City.x), utf8 = FALSE)
-
 mydata$Incident.City.x[mydata$Incident.City.x=="New York City"]<-"New York"
 mydata$Incident.City.y[mydata$Incident.City.y=="New York City"]<-"New York"
 
 mydata$Incident.City.x<-toTitleCase(tolower(mydata$Incident.City.x))
-
-
 
 mydata$Year.of.Incident.x<-as.numeric(as.character(mydata$Year.of.Incident.x))+2000
 mydata$Year.of.Incident.y<-as.numeric(as.character(mydata$Year.of.Incident.y))
@@ -656,9 +627,6 @@ mydata$Notes.x[mydata$Incident.number %in% c("4210","4335","4405")]<-"duplicate 
 
 mydata$Notes.x[mydata$Incident.number ==4746]<-"duplicate of Kenneth James Gleason"
 
-
-
-
 #NYC: Teen Charged With Hate Crime For Beating A Stranger For Being White
 mydata$Incident.City.x[mydata$Incident.number==5162]<-mydata$Incident.City.y[mydata$Incident.number==5162]<-"New York"
 
@@ -666,14 +634,8 @@ mydata$Incident.City.x[mydata$Incident.number==5162]<-mydata$Incident.City.y[myd
 mydata$Incident.City.x[mydata$Incident.number==4182]<-mydata$Incident.City.y[mydata$Incident.number==4182]<-"New York"
 mydata$Notes.x[mydata$Incident.number==4182]<-"eggs thrown at Muslim food-truck owner"
 
-
-
-
 mydata$match_city<-as.numeric(mydata$Incident.City.x==mydata$Incident.City.y)
 mydata$match_month<-as.numeric(mydata$Month.of.Incident.x==mydata$Month.of.Incident.y)
-
-#write.csv(mydata, "CleanData/test1.csv", row.names = FALSE)
-
 
 #Combine the data on which the coders agree:
 agree<-subset(mydata, subset=(match_city==1 & match_month==1))
@@ -711,10 +673,6 @@ disagree<-subset(mydata, subset=(match_city!=1 | match_month!=1 | is.na(match_mo
 #Cases where the coders agree that it was a hate incident but disagree on city or month:
 disagree1<-subset(disagree, subset=(Year.of.Incident.x %in% c("2017","2018") | Year.of.Incident.y%in% c("2017","2018")))
 
-#test<-subset(mydata, subset=is.na(match_month))
-#write.csv(disagree, "CleanData/test1.csv", row.names = FALSE)
-
-
 #If they agree on the city:
 disagree1_city<-subset(disagree1, subset=(match_city==1))
 
@@ -735,9 +693,6 @@ newdata1$inc.id<-disagree1_city$Incident.number
 
 #If they agree on month, but disagree on city:
 disagree1_mo<-subset(disagree1, subset=(match_city==0 & match_month==1))
-#write.csv(disagree1_mo, "CleanData/test1.csv", row.names = FALSE)
-
-
 
 newdata2<-cbind.data.frame(Title=disagree1_mo$Title.x,URL=disagree1_mo$URL.x)
 newdata2$day<-disagree1_mo$Day.of.Incident.x
@@ -760,8 +715,6 @@ disagree1_any<-subset(disagree1, subset=(match_city!=1 & match_month!=1 | is.na(
 #Disagreements other than the additional incidents found by Ike:
 disagree1_any1<-disagree1_any[disagree1_any$Incident.number%%1==0,]
 disagree1_any1<-subset(disagree1_any1, subset=!(is.na(disagree1_any1$URL.x) & is.na(disagree1_any1$URL.y)))
-#write.csv(disagree1_any1, "CleanData/test1.csv", row.names = FALSE)
-
 
 newdata3<-cbind.data.frame(Title=disagree1_any1$Title.x,URL=disagree1_any1$URL.x)
 newdata3$day<-disagree1_any1$Day.of.Incident.x
@@ -811,9 +764,9 @@ inc1<-cbind.data.frame(inc.id=4745.2,
                        type="shooting",
                        issue="race",
                        numdeaths=0,
-                       numvic="2",
-                       numperp="1",
-                       intensity= "3",
+                       numvic=2,
+                       numperp=1,
+                       intensity= 3,
                        notes="Kenneth James Gleason--Additional incident found in article")
 
 inc2<-cbind.data.frame(inc.id=4219.1,
@@ -848,6 +801,22 @@ inc3<-cbind.data.frame(inc.id=4219.2,
                        intensity= 2,
                        notes="Additional incident found in article")
 
+inc1$city<-as.character(inc1$city)
+inc2$city<-as.character(inc2$city)
+inc3$city<-as.character(inc3$city)
+inc1$notes<-as.character(inc1$notes)
+inc2$notes<-as.character(inc2$notes)
+inc3$notes<-as.character(inc3$notes)
+inc1$intensity<-as.factor(inc1$intensity)
+inc2$intensity<-as.factor(inc2$intensity)
+inc3$intensity<-as.factor(inc3$intensity)
+inc1$numdeaths<-as.factor(inc1$numdeaths)
+inc2$numdeaths<-as.factor(inc2$numdeaths)
+inc3$numdeaths<-as.factor(inc3$numdeaths)
+inc1$numvic<-as.factor(inc1$numvic)
+inc2$numvic<-as.factor(inc2$numvic)
+inc3$numvic<-as.factor(inc3$numvic)
+
 newdata_all2<-rbind.data.frame(newdata,newdata1,newdata2, newdata3, newdata4,inc1,inc2,inc3)
 
 newdata_all2<-newdata_all2[, order(names(newdata_all2))]
@@ -857,14 +826,6 @@ newdata_all2<-newdata_all2[, order(names(newdata_all2))]
 newdata_all2$notes[newdata_all2$inc.id %in% c("5035","4697")]<-""
 newdata_all2$notes[newdata_all2$note=="duplucate"]<-"duplicate"
 newdata_all2<-subset(newdata_all2, subset=as.numeric(is.na(stringr::str_extract(newdata_all2$notes, "duplicate")))==1)
-
-Date<-paste(as.character(newdata_all2$day),as.character(newdata_all2$month),as.character(newdata_all2$year),sep="/")
-newdata_all2$date<-as.Date(Date, "%d/%m/%Y")
-newdata_all2<-newdata_all2[order(newdata_all2$date,newdata_all2$city),]
-
-#write.csv(newdata_all2, "CleanData/test1.csv", row.names = FALSE)
-
-
 
 ```
 
@@ -1148,14 +1109,10 @@ newdata<-subset(newdata, subset=as.numeric(is.na(stringr::str_extract(newdata$no
 newdata<-newdata[!is.na(newdata$city),]
 
 
-#newdata<-newdata[order(newdata$date,newdata$city),]
-
 newdata<-rbind.data.frame(newdata,inc1,inc2,inc3,inc4,inc5,inc6,inc7,inc8,inc9,inc10,inc11,inc12,inc13,inc14,inc15)
-Date<-paste(as.character(newdata$day),as.character(newdata$month),as.character(newdata$year),sep="/")
-newdata$date<-as.Date(Date, "%d/%m/%Y")
+
 
 fulldata<-rbind.data.frame(newdata_all,newdata_all1, newdata_all2,newdata)
-fulldata<-fulldata[order(fulldata$date,fulldata$city),]
 fulldata<-fulldata[fulldata$year>2016,]
 
 #Clean up fulldata:
@@ -1196,8 +1153,8 @@ fulldata$notes[fulldata$inc.id==4715]<-"Loudal Baez"
 
 fulldata$notes[fulldata$inc.id==367]<-"Pasquale Vargas"
 
-fulldata$city[fulldata$city=="D.C." | fulldata$city=="D.C" | fulldata$city=="DC" | fulldata$city=="Washington D.c."]<-"Washington, D.c."
-fulldata$state[fulldata$city=="D.C"]<-"NA"
+fulldata$city[fulldata$city=="D.C." | fulldata$city=="D.C" | fulldata$city=="DC" | fulldata$city=="Washington D.c."]<-"Washington, D.C."
+fulldata$state[fulldata$city=="Washington, D.C."]<-"NA"
 
 fulldata$notes[fulldata$inc.id==5138]<-"Joseph Woznik"
 fulldata$notes[fulldata$inc.id %in% c("5158","5325","5456")]<-"duplicate Joseph Woznik"
@@ -1244,7 +1201,7 @@ fulldata$URL[fulldata$inc.id==4479.1]<-"http://www.metroweekly.com/2017/08/mans-
 fulldata$notes[fulldata$inc.id==4479.1]<-"duplicate Antoine Thomas"
 
 fulldata$numperp[fulldata$inc.id==2190]<-1
-fulldata$numperp[fulldata$inc.id==2190]<-"a different train incident from Antoine Thomas"
+fulldata$notes[fulldata$inc.id==2190]<-"a different train incident from Antoine Thomas"
 
 fulldata$notes[fulldata$inc.id %in% c("5622","5103.14")]<-"duplicate Jeremy Joseph Christian"
 
@@ -1293,13 +1250,20 @@ fulldata$notes[fulldata$inc.id %in% c("4459","4466","7589","7777")]<-"duplicates
 fulldata$notes[fulldata$inc.id==4516]<-"Agustin Garcia"
 fulldata$notes[fulldata$inc.id==4512]<-"duplicate Agustin Garcia"
 
+URL<-"https://www.readingeagle.com/ap/article/fear-resolve-and-more-security-at-charlottesvilles-temple"
+fulldata$URL <- factor(fulldata$URL, levels = c(levels(fulldata$URL), URL)) #added a new level to this factor
+fulldata$URL[fulldata$inc.id==4020]<-URL
 
-fulldata$URL[fulldata$inc.id==4020]<-"https://www.readingeagle.com/ap/article/fear-resolve-and-more-security-at-charlottesvilles-temple"
+fulldata$URL <- factor(fulldata$URL, levels = c(levels(fulldata$URL), "https://chicago.eater.com/2017/6/7/15754568/anti-muslim-incident-teen-girls-video-chicago-suburb-hickory-hills-pepes-mexican-restaurant")) #added a new level to this factor
+fulldata$URL[fulldata$inc.id==2314]<-"https://chicago.eater.com/2017/6/7/15754568/anti-muslim-incident-teen-girls-video-chicago-suburb-hickory-hills-pepes-mexican-restaurant"
+
 
 fulldata$notes[fulldata$inc.id==4386]<-"Daniel Borden"
 
 fulldata$notes[fulldata$inc.id==3682]<-"James Fields"
-fulldata$numvic[fulldata$inc.id==3682]<-41
+
+fulldata$numvic <- factor(fulldata$numvic, levels = c(levels(fulldata$numvic),"41")) #added a new level to this factor
+fulldata$numvic[fulldata$inc.id==3682]<-"41"
 fulldata$notes[fulldata$inc.id==4039]<-"duplicate James Fields"
 
 fulldata$notes[fulldata$inc.id==5664]<-"Edward Evseev, Mark Barrancos,and Bruno Camacho"
@@ -1311,7 +1275,7 @@ fulldata$notes[fulldata$inc.id ==4287]<-"international attack"
 
 fulldata$notes[fulldata$inc.id ==4406]<-"Gregory Brzoza"
 fulldata$notes[fulldata$inc.id %in% c("4417","4418","4126","4243")]<-"duplicate Gregory Brzoza"
-fulldata$notes[fulldata$inc.id ==4406]<-"Cleveland"
+fulldata$city[fulldata$inc.id ==4406]<-"Cleveland"
 
 fulldata$notes[fulldata$inc.id ==4177]<-"a man punched an old lady"
 
@@ -1337,7 +1301,7 @@ fulldata$notes[fulldata$inc.id %in% c("5675","5751")]<- "duplicate Brianna Rae B
 fulldata$notes[fulldata$inc.id ==5040]<-"Michael Todd Birkl"
 fulldata$notes[fulldata$inc.id %in% c("5044","5046","5067","4421")]<-"duplicate Michael Todd Birkl"
 
-fulldata$notes[fulldata$inc.id ==4456]<-"Duplicate of 4470"
+fulldata$notes[fulldata$inc.id ==4456]<-"duplicate of 4470"
 
 fulldata$notes[fulldata$inc.id ==4546]<-"Artyom Manukyan"
 fulldata$notes[fulldata$inc.id %in% c("4529","4535","4773")]<-"duplicate Artyom Manukyan"
@@ -1403,7 +1367,7 @@ fulldata$notes[fulldata$inc.id ==7984]<-"duplicate of 7992 Virgin Mary statue"
 fulldata$notes[fulldata$inc.id ==8165]<-"duplicate of 8150"
 
 fulldata$notes[fulldata$inc.id ==5221]<-"David Harris, Jesse Harris and Austin Taggart"
-fulldata$notes[fulldata$inc.id %in% c("5222","5235")]<-"David Harris, Jesse Harris and Austin Taggart"
+fulldata$notes[fulldata$inc.id %in% c("5222","5235")]<-"duplicate David Harris, Jesse Harris and Austin Taggart"
 fulldata$day[fulldata$inc.id ==5221]<-18
 fulldata$month[fulldata$inc.id ==5221]<-4
 
@@ -1432,22 +1396,40 @@ fulldata$notes[fulldata$inc.id %in% c("4298","4344")]<-"duplicate of 7532"
 
 fulldata$notes[fulldata$inc.id ==2202]<-"duplicate of 2341"
 
-fulldata$state[fulldata$inc.id ==5054]<-"Wyoming"
+fulldata$notes[fulldata$inc.id ==5054]<-"Wyoming"
 
 
 fulldata$day[fulldata$inc.id ==5270]<-28
-fulldata$day[fulldata$inc.id ==5270]<-9
+fulldata$month[fulldata$inc.id ==5270]<-9
 
-fulldata$day[fulldata$inc.id ==5355]<-"duplicate of 5270"
+fulldata$notes[fulldata$inc.id ==5355]<-"duplicate of 5270"
 
 fulldata$day[fulldata$inc.id ==5095]<-25
 
 fulldata$notes[fulldata$inc.id ==4964]<-"duplicate of 4957"
+fulldata$URL <- factor(fulldata$URL, levels = c(levels(fulldata$URL),"https://www.nbcnews.com/news/us-news/american-university-finds-confederate-flag-signs-posted-after-antiracist-presentation-n805266")) #added a new level to this factor
 fulldata$URL[fulldata$inc.id ==4957]<-"https://www.nbcnews.com/news/us-news/american-university-finds-confederate-flag-signs-posted-after-antiracist-presentation-n805266"
 fulldata$day[fulldata$inc.id ==4957]<-26
-fulldata$day[fulldata$inc.id ==4957]<-9
+fulldata$month[fulldata$inc.id ==4957]<-9
+
+fulldata$Title <- factor(fulldata$Title, levels = c(levels(fulldata$Title),"American University Finds Confederate Flag Signs Posted After Anti-Racist Presentation"))
 fulldata$Title[fulldata$inc.id ==4957]<-"American University Finds Confederate Flag Signs Posted After Anti-Racist Presentation"
 
+fulldata$notes[fulldata$inc.id==5466]<-"duplicate of Gerald Sloane Wallace"
+
+fulldata$notes[fulldata$inc.id==4602]<-"duplicate of 82"
+fulldata$numvic[fulldata$inc.id==83]<-3
+
+fulldata$notes[fulldata$inc.id==5402]<-"Bennett Smith"
+fulldata$notes[fulldata$inc.id==5357]<-"duplicate Bennett Smith"
+
+fulldata$year[fulldata$inc.id==7144]<-2017
+fulldata$day[fulldata$inc.id==7144]<-13
+
+fulldata$year[fulldata$inc.id==8114]<-2017
+fulldata$year[fulldata$inc.id==6942]<-2017
+fulldata$year[fulldata$inc.id==8147]<-2017
+fulldata$year[fulldata$inc.id==3218]<-2017
 
 inc1<-cbind.data.frame(inc.id=5644.1,
                        Title="Jewelry store targeted in recent hate crimes.1",
@@ -1461,7 +1443,7 @@ inc1<-cbind.data.frame(inc.id=5644.1,
                        issue="religion",
                        numdeaths=0,
                        numvic=0,
-                       numperp="1at least 1",
+                       numperp="at least 1",
                        intensity= 1,
                        notes="Add inc, Jewelry store")
 
@@ -1506,8 +1488,10 @@ Date<-paste(as.character(fulldata$day),as.character(fulldata$month),as.character
 fulldata$date<-as.Date(Date, "%d/%m/%Y")
 
 fulldata<-unique(fulldata)
-
-write.csv(fulldata, "CleanData/test1.csv", row.names = FALSE)
+fulldata<-fulldata[order(fulldata$date,fulldata$city),]
+fulldata<-fulldata[!is.na(fulldata$date),]
+fulldata<-fulldata[!is.na(fulldata$inc.id),]
+write.csv(fulldata, "CleanData/hatedata.csv", row.names = FALSE)
 
 ```
 
