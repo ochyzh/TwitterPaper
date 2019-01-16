@@ -1423,6 +1423,12 @@ fulldata$numvic[fulldata$inc.id==83]<-3
 fulldata$notes[fulldata$inc.id==5402]<-"Bennett Smith"
 fulldata$notes[fulldata$inc.id==5357]<-"duplicate Bennett Smith"
 
+fulldata$notes[fulldata$inc.id==6264]<-"Michael E. Dickey"
+fulldata$notes[fulldata$inc.id==6259]<-"duplicate Michael E. Dickey"
+
+fulldata$notes[fulldata$inc.id==6825]<-"Jermaine Hines Jr."
+
+
 fulldata$year[fulldata$inc.id==7144]<-2017
 fulldata$day[fulldata$inc.id==7144]<-13
 
