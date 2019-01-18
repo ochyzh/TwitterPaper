@@ -136,7 +136,7 @@ inc2<-cbind.data.frame(Title="Four Frisco Men Charged with Federal Hate Crimes f
                        day=17,
                        month=1,
                        year=2017,
-                       city="Plato",
+                       city="Plano",
                        state="Texas",
                        type="home invasion",
                        issue="LGBT",
@@ -152,7 +152,7 @@ inc3<-cbind.data.frame(Title="Four Frisco Men Charged with Federal Hate Crimes f
                        day=7,
                        month=2,
                        year=2017,
-                       city="Plato",
+                       city="Plano",
                        state="Texas",
                        type="home invasion",
                        issue="LGBT",
@@ -1396,7 +1396,7 @@ fulldata$notes[fulldata$inc.id %in% c("4298","4344")]<-"duplicate of 7532"
 
 fulldata$notes[fulldata$inc.id ==2202]<-"duplicate of 2341"
 
-fulldata$notes[fulldata$inc.id ==5054]<-"Wyoming"
+fulldata$state[fulldata$inc.id ==5054]<-"Wyoming"
 
 
 fulldata$day[fulldata$inc.id ==5270]<-28
@@ -1411,6 +1411,11 @@ fulldata$URL <- factor(fulldata$URL, levels = c(levels(fulldata$URL),"https://ww
 fulldata$URL[fulldata$inc.id ==4957]<-"https://www.nbcnews.com/news/us-news/american-university-finds-confederate-flag-signs-posted-after-antiracist-presentation-n805266"
 fulldata$day[fulldata$inc.id ==4957]<-26
 fulldata$month[fulldata$inc.id ==4957]<-9
+
+fulldata$URL <- factor(fulldata$URL, levels = c(levels(fulldata$URL),"https://www.apnews.com/79d21c88b9fa4ee2a10496d45c1792fd")) #added a new level to this factor
+fulldata$URL[fulldata$inc.id ==115]<-"https://www.apnews.com/79d21c88b9fa4ee2a10496d45c1792fd"
+
+
 
 fulldata$Title <- factor(fulldata$Title, levels = c(levels(fulldata$Title),"American University Finds Confederate Flag Signs Posted After Anti-Racist Presentation"))
 fulldata$Title[fulldata$inc.id ==4957]<-"American University Finds Confederate Flag Signs Posted After Anti-Racist Presentation"
@@ -1428,6 +1433,75 @@ fulldata$notes[fulldata$inc.id==6259]<-"duplicate Michael E. Dickey"
 
 fulldata$notes[fulldata$inc.id==6825]<-"Jermaine Hines Jr."
 
+
+fulldata$state[fulldata$inc.id==6729]<-"Massachusetts"
+
+fulldata$notes[fulldata$inc.id==6533]<-"Jeremy Dean Thacker"
+
+fulldata$notes[fulldata$inc.id==6518]<-"Matthew R. Ellis"
+fulldata$notes[fulldata$inc.id==5103.16]<-"Noah Kronsteiner"
+
+fulldata$state[fulldata$inc.id==7654]<-"New York"
+fulldata$city[fulldata$inc.id==7654]<-"New York" #Queens
+
+fulldata$state[fulldata$inc.id==3232]<-"North Carolina"
+
+fulldata$notes[fulldata$inc.id==3125]<-"James Patrick Billiot and Justin William Rifanburg "
+fulldata$state[fulldata$inc.id==3125]<-"North Dakota"
+
+#Typoes
+fulldata$state<-gsub("(^[[:space:]]*)|([[:space:]]*$)", "", fulldata$state)
+fulldata$city[fulldata$inc.id==6177]<-"Cinnaminson" 
+fulldata$city[fulldata$inc.id==6353]<-"Huntley" 
+fulldata$city[fulldata$inc.id==3955]<-"Jackson"
+fulldata$city[fulldata$inc.id==7357]<-"Jonesborough" 
+fulldata$city[fulldata$inc.id==5895]<-"Washington, D.C."
+fulldata$city[fulldata$inc.id==3317]<-"Kalkaska"
+fulldata$city[fulldata$inc.id==3257]<-"Dallas"
+
+
+fulldata$state[fulldata$state=="South Carlolina"]<-"South Carolina"
+fulldata$state[fulldata$state=="Conneticut"]<-"Connecticut"
+fulldata$state[fulldata$state=="Virgina"]<-"Virginia"
+fulldata$state[fulldata$state=="WestVirginia"]<-"West Virginia"
+fulldata$state[fulldata$state=="Lousiana"]<-"Louisiana"
+fulldata$city[fulldata$city=="Berkley" | fulldata$city=="Berkely"]<-"Berkeley"
+fulldata$state[fulldata$state=="Califronia"]<-"California"
+fulldata$city[fulldata$city=="Clarement"]<-"Claremont"
+fulldata$city[fulldata$city=="Mt. Hood"]<-"Mount Hood"
+fulldata$city[fulldata$city=="Orangeville"]<-"Orangevale"
+fulldata$city[fulldata$city=="La Cañada Valley"]<-"La Canada Flintridge"
+fulldata$city[fulldata$city=="Cook County"]<-"McCook"
+fulldata$city[fulldata$city=="Gavelston"]<-"Galveston"
+fulldata$city[fulldata$inc.id==5926]<-"Hoboken" 
+fulldata$city[fulldata$city =="New york" |fulldata$city == "Astoria"| fulldata$city =="Manhatten"| fulldata$city =="Manhattan" | fulldata$city=="Brooklyn"| fulldata$city =="Chelsea" | fulldata$city =="Chealsea" | fulldata$city =="Long Island" | fulldata$city =="Staten Island" | fulldata$city =="SoHo" | fulldata$city =="West Queens"]<-"New York"
+fulldata$state[fulldata$city=="New York"]<-"New York"
+fulldata$city[fulldata$city=="Lincold Square"]<-"Chicago"
+fulldata$city[fulldata$city=="Logan Heights"]<-"San Diego"
+fulldata$city[fulldata$city=="Hillcrest"]<-"San Diego"
+fulldata$city[fulldata$city=="Malibu West"]<-"Malibu"
+fulldata$city[fulldata$city=="Pacific Palisades"]<-"Los Angeles"
+fulldata$city[fulldata$city=="Philadeplphia" | fulldata$city=="Philedelphia"]<-"Philadelphia"
+fulldata$city[fulldata$city=="Pittsburg"]<-"Pittsburgh"
+fulldata$city[fulldata$city=="Scottesdale"]<-"Scottsdale"
+fulldata$city[fulldata$city=="Southhampton"]<-"Southampton"
+fulldata$city[fulldata$city=="St Charles"]<-"Saint Charles"
+fulldata$city[fulldata$city=="St Louis" | fulldata$city=="St. Louis" ]<-"Saint Louis"
+fulldata$city[fulldata$city=="St. Cloud"]<-"Saint Cloud"
+fulldata$city[fulldata$city=="St. Joseph"]<-"Saint Joseph"
+fulldata$city[fulldata$city=="Tuskaloosa"]<-"Tuscaloosa"
+fulldata$city[fulldata$city=="West Coniva"]<-"West Covina"
+fulldata$city[fulldata$city=="Woodbrige"]<-"Woodbridge"
+fulldata$city[fulldata$city=="Woodland Hills"]<-"Los Angeles"
+fulldata$city[fulldata$city=="Ysleta del Sur Pueblo"]<-"El Paso"
+
+
+fulldata$city[fulldata$inc.id==6775]<-"Margate City"
+fulldata$city[fulldata$inc.id==4057]<-"Roseville"
+fulldata$city[fulldata$inc.id==5443]<-"New York"
+fulldata$city[fulldata$inc.id==1443]<-"Nassau"
+fulldata$city[fulldata$inc.id==3010]<-"Silver Spring"
+fulldata$city[fulldata$inc.id==5103.16]<-"Tigard"
 
 fulldata$year[fulldata$inc.id==7144]<-2017
 fulldata$day[fulldata$inc.id==7144]<-13

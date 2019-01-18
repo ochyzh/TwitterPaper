@@ -1,0 +1,227 @@
+---
+title: "datasum"
+author: "Olga Chyzh"
+date: "January 16, 2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(viridisLite)
+library(viridis)
+library(sugrrants)
+
+library(maps)
+library(mapdata)
+library(lubridate)
+library(leaflet)
+
+#Set theme options:
+theme_set(theme_grey() + theme(panel.background = element_rect(fill = NA, color = 'black'))+ theme(axis.text=element_text(size=10),
+					axis.title=element_text(size=12,face="bold")))
+
+hatedata<-read.csv("CleanData/hatedata.csv", header=TRUE)
+hatedata$intensity<-as.numeric(as.character(hatedata$intensity))
+```
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+daily<-aggregate(data=hatedata,inc.id~date, FUN=length)
+
+
+p<-ggplot(data=mo)+geom_line(aes(x=date, y=inc.id))
+p
+
+plot(pressure)
+```
+
+
+```{r}
+
+
+data17 <- filter(hatedata, year == "2017")
+data17_day <- data17 %>% group_by(date=as.Date(date)) %>% 
+    summarise(numinc = as.numeric(length(inc.id))) %>% ungroup
+#data17_day$Date<-as.Date(data17_day$date, "%Y/%m/%d")
+#data17_day$time<-as.integer(13)
+#data17_day$date<-lubridate::ymd_hm(paste(data17_day$date, "1:00 PM"))
+
+alldates<-tibble(date=seq(as.Date("2017/1/1"), as.Date("2017/12/31"), "days"))
+
+mydata<- left_join(alldates, data17_day)
+mydata$numinc[is.na(mydata$numinc)]<-0
+
+dcalendar<- mydata %>% frame_calendar(x=1, y=1, date=date, calendar="monthly", week_start = getOption("lubridate.week.start", 7))
+dcalendar
+day<-as.numeric(format(dcalendar$date,"%d"))
+#month<-as.numeric(format(dcalendar$date,"%m"))
+#month<-month.abb[month]
+
+p8 <- dcalendar %>%
+  ggplot(aes(x = .x, y = .y)) +
+  geom_tile(aes(fill = numinc), colour = "grey50") + geom_text(label=day,size=3, nudge_x = .001, nudge_y=.02)+
+  scale_fill_continuous("Number of Hate Incidents",low="white", high="red")
+prettify(p8, label=c("label"),label.padding = unit(0.2, "lines"))+
+    theme(legend.position="bottom")+ggtitle("Hate Crimes in the US, 2017")+theme(plot.title = element_text(hjust = 0.5))
+
+p7 <- dcalendar %>%
+  ggplot(aes(x = .x, y = .y)) +
+  geom_tile(aes(fill = numinc), colour = "grey50") + geom_text(label=day,size=1.5, nudge_x = .001, nudge_y=.02)+
+  scale_fill_continuous("Number of Hate Incidents",low="white", high="red")
+prettify(p7, label=c("label"),label.padding = unit(0.1, "lines"),size=2.5)+
+    theme(legend.position=c(0.5,0))+ggtitle("Hate Crimes in the US, 2017")+theme(plot.title = element_text(hjust = 0.5,vjust=1, size=7),legend.text=element_text(size=5),legend.title=element_text(size=5),legend.key.size = unit(.4,"line"),legend.direction = "horizontal")
+
+ggsave("hate_calendar.jpg", width = 4, height = 3)
+
+
+
+```
+ 
+ 
+ 
+```{r}
+
+
+data17$intensity<-as.numeric(as.character(data17$intensity))
+
+data17_hi <- filter(data17, intensity >2)
+data17_day_hi <- data17_hi %>% group_by(date=as.Date(date)) %>% 
+    summarise(numinc = as.numeric(length(inc.id))) %>% ungroup
+
+Date<-data17_day_hi$date
+day<-format(Date,"%d")
+
+
+mydata1<- left_join(alldates, data17_day_hi)
+mydata1$numinc[is.na(mydata1$numinc)]<-0
+
+dcalendar1<- mydata1 %>% frame_calendar(x=1, y=1, date=date, calendar="monthly", week_start = getOption("lubridate.week.start", 7))
+dcalendar1
+day<-as.numeric(format(dcalendar1$date,"%d"))
+
+p9 <- dcalendar1 %>%
+  ggplot(aes(x = .x, y = .y)) +
+  geom_tile(aes(fill = numinc), colour = "grey50") + geom_text(label=day,size=3, nudge_x = .001, nudge_y=.02)+
+  scale_fill_continuous("Number of Hate Incidents",low="white", high="red")
+prettify(p9, label=c("label"),label.padding = unit(0.2, "lines"))+
+    theme(legend.position="bottom")+ggtitle("Violent Hate Crimes in the US, 2017")
+
+
+p10 <- dcalendar1 %>%
+  ggplot(aes(x = .x, y = .y)) +
+  geom_tile(aes(fill = numinc), colour = "grey50") + geom_text(label=day,size=1.5, nudge_x = .001, nudge_y=.02)+
+  scale_fill_continuous("Number of Hate Incidents",low="white", high="red")
+
+prettify(p10, label=c("label"),label.padding = unit(0.1, "lines"),size=2.5)+
+    theme(legend.position=c(0.5,0))+ggtitle("Violent Hate Crimes in the US, 2017")+theme(plot.title = element_text(hjust = 0.5,vjust=1, size=7),legend.text=element_text(size=5),legend.title=element_text(size=5),legend.key.size = unit(.4,"line"),legend.direction = "horizontal")
+
+ggsave("hate_calendar1.jpg", width = 4, height = 3)
+
+
+```
+ 
+
+Maps: 
+```{r}
+usa <- map_data("state") #map_data function is under the ggplot2 package. This "world" map data consists of longitude, latitude, group and region and subregion.
+
+#Set theme options:
+theme_set(theme_grey() + theme(axis.text=element_blank(),
+              axis.ticks=element_blank(),
+              axis.title.x=element_blank(),
+              axis.title.y=element_blank(),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
+              panel.border = element_blank(),
+              panel.background = element_blank(),
+		  legend.position="none"))
+
+usamap <- ggplot() +
+  geom_polygon(data=usa, aes(x=long, y=lat, group=group), fill="white", color="black")
+#geon_polygon is making the base border for world map. By assigning group, we make R draw lines only withing each country.
+usamap
+
+#Merge coordinates into the hate incidents data:
+hatedata$state<-as.character(hatedata$state)
+hatedata$state[hatedata$state=="NA"]<-""
+hatedata$state_abb<-state.abb[match(hatedata$state,state.name)]
+hatedata$name<-paste(hatedata$city,hatedata$state_abb, sep=" ")
+
+uscities<-read.csv("geodata/uscitiesv1.4.csv", header=TRUE) #https://simplemaps.com/data/us-cities
+uscities$name<-paste(uscities$city,uscities$state_id, sep=" ")
+uscities<-subset(uscities, select=c("county_name","lat","lng","population","population_proper","density","zips","timezone","name"))
+uscities$name[uscities$name=="Amherst Center MA"]<-"Amherst MA"
+uscities$name[uscities$name=="Gates Center NY"]<-"Gates NY"
+uscities$name[uscities$name=="La CaÃ±ada Flintridge CA"]<-"La Canada Flintridge CA"
+uscities$name[uscities$name=="HaleÊ»iwa HI"]<-"Haleiwa HI"
+
+#Code the closest large city for cities that are too small:
+hatedata$name[hatedata$name=="Sunderland MA"]<-"Springfield MA"
+hatedata$name[hatedata$name=="Brewerytown PA"]<-"Philadelphia PA"
+hatedata$name[hatedata$name=="Capitol Hill WA"]<-"Seattle WA"
+hatedata$name[hatedata$name=="Fort Lee VA"]<-"Petersburg VA"
+hatedata$name[hatedata$name=="Green Township OH"]<-"Cincinnati OH"
+hatedata$name[hatedata$name=="Jackson NJ"]<-"Ocean City NJ"
+hatedata$name[hatedata$name=="Lafourche Parish LA"]<-"Thibodaux LA"
+hatedata$name[hatedata$name=="Liberty Township NJ"]<-"Great Meadows NJ"
+hatedata$name[hatedata$name=="Livingston Parish LA"]<-"Livingston LA"
+hatedata$name[hatedata$name=="Loudoun VA"]<-"Leesburg VA"
+hatedata$name[hatedata$name=="Middletown Township PA"]<-"Langhorne PA"
+hatedata$name[hatedata$name=="Monmouth ME"]<-"Augusta ME"
+hatedata$name[hatedata$name=="New Baltimore NY"]<-"Ravena NY"
+hatedata$name[hatedata$name=="North Shore HI"]<-"Haleiwa HI"
+hatedata$name[hatedata$name=="Owasco NY"]<-"Auburn NY"
+hatedata$name[hatedata$name=="Queensbury NY" | hatedata$name=="Saratoga NY"]<-"Saratoga Springs NY"
+hatedata$name[hatedata$name=="Rosendale NY"]<-"Stone Ridge NY"
+hatedata$name[hatedata$name=="San Juan NA"]<-"San Juan PR" #Puerto Rico
+hatedata$name[hatedata$name=="Sonoma Valley CA"]<-"Sonoma CA"
+hatedata$name[hatedata$name=="South Orange NJ"]<-"Newark NJ"
+hatedata$name[hatedata$name=="Southeast NY"]<-"Danbury CT"
+hatedata$name[hatedata$name=="Taghkanic NY"]<-"Catskill NY"
+hatedata$name[hatedata$name=="Verona NJ"]<-"Clifton NJ"
+hatedata$name[hatedata$name=="Wilton CT"]<-"Norwalk CT"
+hatedata$name[hatedata$name=="Washington, D.C. NA"]<-"Washington DC"
+hatedata$name[hatedata$name=="Wrentham MA"]<-"Boston MA"
+hatedata$name[hatedata$name=="West Ashley SC"]<-"Charleston SC"
+
+inc_coord<-left_join(hatedata, uscities, by="name")
+
+write.csv(inc_coord, "CleanData/mapdata.csv", row.names = FALSE)
+
+#Remore HI and PR:
+inc_coord<-inc_coord[inc_coord$state!="Hawaii" & inc_coord$state!="Puerto Rico",]
+
+#Now we can add the location of all terrorist attacks to the map
+inc_coord_location <- inc_coord %>% group_by(name=name) %>% 
+    summarise(numinc = as.numeric(length(inc.id)), lat=mean(lat), lng=mean(lng)) %>% ungroup
+
+p<-usamap +  geom_point(aes(x=as.numeric(lng), y=as.numeric(lat), size=numinc, colour="red"), data=inc_coord_location)+guides(fill=FALSE)
+p
+
+p1<-usamap +  geom_point(aes(x=as.numeric(lng), y=as.numeric(lat), size=as.factor(intensity)), colour="red", data=inc_coord)+ theme(legend.position="NULL")
+p1+ggtitle("Hate Incidents, Jan. 2017-April 2018")+theme(plot.title = element_text(hjust = 0.5))+labs(caption = "Notes: Size is proportional to incident intensity.")+scale_size_manual(values= c(1,1.5,2,2.5,3,3.5))
+
+ggsave("hate_map.jpg", width = 4, height = 3)
+
+```
+ 
+ 
+```{r}
+
+
+
+```
+ 
