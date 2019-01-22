@@ -1,0 +1,230 @@
+---
+title: "nat_catcher_fun"
+author: "Olga Chyzh"
+date: "January 18, 2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Load the libraries:
+
+```{r}
+
+rm(list = ls())
+library(tidyverse)
+library(data.table)
+```
+
+The function that calculates the number of white nat followers:
+
+```{r}
+nat_catcher<-function(myrep, path){
+  mypath<-paste(path,myrep,sep="")
+  mydata<-fread(mypath, header=TRUE)
+
+#Now want to replace certain words in description (e.g., "White House" or "teeth whitening) with spaces:
+desc_clean<-mydata$description
+
+
+#table(grepl("White House",desc_clean, ignore.case = TRUE))
+clist <- c("White House", "WhiteHouse", "teeth whitening", "Go White", "Red White and Blue","Red, White, and Blue",
+           "Red, White and Blue","Red,White,&Blue","Red,White and Blue","white silence is violence","RedWhite&Blue",
+           "black and white","white-label","whiteboard","whitetails","whitefield","white sox","whitesox")
+for (i in clist) {
+  desc_clean<-gsub(i, "",desc_clean,ignore.case = TRUE)
+
+}
+
+
+
+wd<-as.numeric(grepl("White",desc_clean, ignore.case = TRUE)==TRUE | 
+                      grepl("altright",desc_clean, ignore.case = TRUE)==TRUE |
+                      grepl("alt-right",desc_clean, ignore.case = TRUE)==TRUE |
+                      grepl("alt right",desc_clean, ignore.case = TRUE)==TRUE |
+                      grepl("Aryan",desc_clean, ignore.case = FALSE)==TRUE |
+                      grepl("ethno-nationalist",desc_clean, ignore.case = FALSE)==TRUE |
+                      grepl("identitarian",desc_clean, ignore.case = FALSE)==TRUE |
+                      grepl("14words",desc_clean, ignore.case = FALSE)==TRUE |
+                      grepl("\u26a1?\u26a1 ",desc_clean, ignore.case = FALSE)==TRUE 
+                       )
+tot<-nrow(mydata)
+
+return(cbind(myrep,sum(wd),tot))
+
+}
+
+
+
+```
+
+Apply the nat_catcher:
+
+```{r}
+#Get the list of filenames that store info on followers:
+myreps<-list.files("./house_foll1/")
+rep_scores<-lapply(myreps,nat_catcher, path="./house_foll1/")
+rep_scores<-as.data.frame(matrix(unlist(rep_scores),518,3, byrow=TRUE))
+names(rep_scores)<-c("handle_mod","natfol","totfol")
+
+#Get partial handle var for merging with USreps 
+rep_scores$handle_mod<-gsub(".csv", "", rep_scores$handle_mod)
+rep_scores$handle_part<-gsub('[[:digit:]]+', '', rep_scores$handle_mod)
+
+rep_scores$natfol<-as.numeric(as.character(rep_scores$natfol))
+rep_scores$totfol<-as.numeric(as.character(rep_scores$totfol))
+head(rep_scores)
+
+#Get the twitter handles:
+
+rep_scores1<-rep_scores %>% group_by(handle_part) %>%
+    mutate(handle = dplyr::first(handle_mod), natfol=sum(natfol), totfol=sum(totfol))
+rep_scores1<-unique(rep_scores1[,2:5])
+
+#Get a list of accounts with more than 90000 followers:
+pop_list<-function(x, path){
+  oname<-paste(path,x,sep="")
+  myfile<-read.csv(oname, header=TRUE)
+  if (length(myfile$user_id)>90000) {
+    x<-gsub(".csv", "", x)
+    rep_popular<-c(rep_popular,x)
+  } 
+}
+
+myfiles<-list.files("./house_out/")
+rep_popular<-NULL
+
+rep_popular<-lapply(myfiles, pop_list, path="./house_out/")
+rep_popular<-unique(unlist(rep_popular))
+
+rep_scores1$handle<-as.character(rep_scores1$handle)
+rep_scores1$handle[rep_scores1$handle_part %in% rep_popular==TRUE]<- substr(rep_scores1$handle[rep_scores1$handle_part %in% rep_popular==TRUE],1, nchar(rep_scores1$handle[rep_scores1$handle_part %in% rep_popular==TRUE]) -1)
+
+
+```
+
+Add the additional accounts that we missed originally:
+```{r}
+#Get the list of filenames that store info on followers:
+myreps<-list.files("./house_foll_add/")
+rep_scores<-lapply(myreps,nat_catcher, path="./house_foll_add/")
+
+
+rep_scores<-as.data.frame(matrix(unlist(rep_scores),41,3, byrow=TRUE))
+names(rep_scores)<-c("handle_mod","natfol","totfol")
+
+#Get partial handle var for merging with USreps 
+rep_scores$handle_mod<-gsub(".csv", "", rep_scores$handle_mod)
+rep_scores$handle_part<-gsub('[[:digit:]]+', '', rep_scores$handle_mod)
+
+rep_scores$natfol<-as.numeric(as.character(rep_scores$natfol))
+rep_scores$totfol<-as.numeric(as.character(rep_scores$totfol))
+head(rep_scores)
+
+#Get the twitter handles:
+
+rep_scores2<-rep_scores %>% group_by(handle_part) %>%
+    mutate(handle = dplyr::first(handle_mod), natfol=sum(natfol), totfol=sum(totfol))
+rep_scores2<-unique(rep_scores2[,2:5])
+
+#Get a list of accounts with more than 90000 followers to correct some handles:
+myfiles<-list.files("./house_out_add/")
+rep_popular<-NULL
+rep_popular<-lapply(myfiles, pop_list, path="./house_out_add/")
+rep_popular<-unique(unlist(rep_popular))
+
+rep_scores2$handle<-as.character(rep_scores2$handle)
+rep_scores2$handle[rep_scores2$handle_part %in% rep_popular==TRUE]<- substr(rep_scores2$handle[rep_scores2$handle_part %in% rep_popular==TRUE],1, nchar(rep_scores1$handle[rep_scores2$handle_part %in% rep_popular==TRUE]) -1)
+
+```
+
+
+
+
+Merge the results with a data on US Reps: 
+```{r}
+rep_scores<-rbind.data.frame(rep_scores1,rep_scores2)
+rep_scores<-rep_scores %>% ungroup %>% mutate(prop_nats=natfol/totfol)
+#Open the file that contains cleaned up names and nat scores:
+mydata<-read.csv("USreps.csv", header=TRUE)
+head(mydata)
+
+
+
+mydata1<-left_join(mydata, rep_scores, by="handle_part")
+write.csv(mydata1, "Repswscores.csv", row.names = FALSE)
+```
+
+
+#Code name based on the twitter handle:
+scores[,1]<-gsub(".csv", "", scores[,1])
+scores[,1]<-gsub('[[:digit:]]+', '', scores[,1])
+scores$score<-as.numeric(as.character(scores[,2]))
+scores$tot_fol<-as.numeric(as.character(scores[,3]))
+
+#Get correct natscores for popular reps whose followers were broken up in multiple files:
+scores<-aggregate(cbind(score,tot_fol)~V1,data=scores,FUN=sum)
+
+
+scores$name<-gsub('([[:upper:]])', ' \\1', scores[,1])
+scores$name<-gsub("Mc ", "Mc", scores$name)
+scores$name<-sub("rep", "", scores$name, ignore.case=TRUE)
+scores$name<-sub("^\\s+", "", scores$name)
+scores$fname<-word(scores$name, 1)
+scores$lname<-word(scores$name, 2)
+
+write.csv(scores,"scores.csv", row.names=FALSE)
+
+
+#Get total number of followers for each account:
+#for (i in seq(1:length(houseaccounts))) {
+
+
+
+get_tot_followers<-function(accountname, acctpath){
+  oname<-paste(acctpath,accountname, sep="")
+  rep<-read.csv(oname, header=TRUE)
+  tot<-length(rep$user_id)
+  name<-gsub(".csv", "", accountname)
+  return(cbind(name,tot))
+}
+
+filenames<-list.files(path="house_out/", pattern="*.csv")
+#get_tot_followers(filenames[1],acctpath="house_out/")
+mytots<-lapply(filenames,get_tot_followers,acctpath="house_out/")
+
+totfol<-unlist(mytots)
+totfol<-matrix(totfol,(length(totfol)/2),2, byrow=TRUE)
+head(totfol)
+dim(totfol)
+
+#Get total natscore for popular reps whose followers were broken up in multiple files:
+totfol<-as.data.frame(totfol)
+names(totfol)<-c("handle","tot_fol")
+totfol$tot_fol<-as.numeric(as.character(totfol$tot_fol))
+totfol$handle<-gsub('[[:digit:]]+', '', totfol$handle)
+totfol<-aggregate(tot_fol~handle,data=totfol,FUN=max)
+dim(totfol)
+
+
+#This is to get the additional reps that we missed the first time:
+filenames1<-list.files(path="house_out_add/", pattern="*.csv") #Reps missed the first time around
+
+
+scores<-read.csv("scores.csv", header=TRUE)
+scores<-subset(scores, select=c("V1","score","tot_fol"))
+
+#Open the file that contains cleaned up names and nat scores:
+mydata<-read.csv("scores_wnames.csv", header=TRUE)
+mydata$score<-NULL
+head(mydata)
+dim(mydata)
+
+mydata1<-merge(mydata, scores, by.x="V1", by.y="V1", all.x=TRUE)
+write.csv(mydata1, "scores_wnames_and_tots.csv", row.names = FALSE)
+
