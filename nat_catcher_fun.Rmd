@@ -152,79 +152,36 @@ rep_scores<-rbind.data.frame(rep_scores1,rep_scores2)
 rep_scores<-rep_scores %>% ungroup %>% mutate(prop_nats=natfol/totfol)
 #Open the file that contains cleaned up names and nat scores:
 mydata<-read.csv("USreps.csv", header=TRUE)
-head(mydata)
 
+#Deal with replacements:
+mydata$EndInOffice<-as.Date(mydata$EndInOffice, format="%d-%b-%y")
+mydata$OfficeUntilYear<-format(mydata$EndInOffice,"%Y")
+mydata<-subset(mydata, subset=OfficeUntilYear!=2017 | is.na(OfficeUntilYear))
 
+mydata$StartInOffice<-as.Date(mydata$StartInOffice, format="%d-%b-%y")
+mydata$OfficeSinceYear<-format(mydata$StartInOffice,"%Y")
+mydata<-subset(mydata, subset=OfficeSinceYear==2017 | is.na(OfficeSinceYear))
 
 mydata1<-left_join(mydata, rep_scores, by="handle_part")
 write.csv(mydata1, "Repswscores.csv", row.names = FALSE)
 ```
 
+#Identify reps to code twitter content:
 
-#Code name based on the twitter handle:
-scores[,1]<-gsub(".csv", "", scores[,1])
-scores[,1]<-gsub('[[:digit:]]+', '', scores[,1])
-scores$score<-as.numeric(as.character(scores[,2]))
-scores$tot_fol<-as.numeric(as.character(scores[,3]))
+```{r}
+mydata1<-subset(mydata1, subset=(replacement_bin!=1 | is.na(replacement_bin)) & (replaced_bin!=1 | is.na(replaced_bin)))
 
-#Get correct natscores for popular reps whose followers were broken up in multiple files:
-scores<-aggregate(cbind(score,tot_fol)~V1,data=scores,FUN=sum)
+gop<-subset(mydata1, Party=="R")
+top1gop<-subset(gop, prop_nats>quantile(prop_nats,.99))
+top5gop<-subset(gop, prop_nats>quantile(prop_nats,.95))
+top10gop<-subset(gop, prop_nats>quantile(prop_nats,.90))
+top5gop$handle
 
+dem<-subset(mydata1, Party=="D")
+top5dem<-subset(dem, prop_nats>quantile(prop_nats,.95))
+top10dem<-subset(dem, prop_nats>quantile(prop_nats,.9))
+top5dem$handle
 
-scores$name<-gsub('([[:upper:]])', ' \\1', scores[,1])
-scores$name<-gsub("Mc ", "Mc", scores$name)
-scores$name<-sub("rep", "", scores$name, ignore.case=TRUE)
-scores$name<-sub("^\\s+", "", scores$name)
-scores$fname<-word(scores$name, 1)
-scores$lname<-word(scores$name, 2)
+```
 
-write.csv(scores,"scores.csv", row.names=FALSE)
-
-
-#Get total number of followers for each account:
-#for (i in seq(1:length(houseaccounts))) {
-
-
-
-get_tot_followers<-function(accountname, acctpath){
-  oname<-paste(acctpath,accountname, sep="")
-  rep<-read.csv(oname, header=TRUE)
-  tot<-length(rep$user_id)
-  name<-gsub(".csv", "", accountname)
-  return(cbind(name,tot))
-}
-
-filenames<-list.files(path="house_out/", pattern="*.csv")
-#get_tot_followers(filenames[1],acctpath="house_out/")
-mytots<-lapply(filenames,get_tot_followers,acctpath="house_out/")
-
-totfol<-unlist(mytots)
-totfol<-matrix(totfol,(length(totfol)/2),2, byrow=TRUE)
-head(totfol)
-dim(totfol)
-
-#Get total natscore for popular reps whose followers were broken up in multiple files:
-totfol<-as.data.frame(totfol)
-names(totfol)<-c("handle","tot_fol")
-totfol$tot_fol<-as.numeric(as.character(totfol$tot_fol))
-totfol$handle<-gsub('[[:digit:]]+', '', totfol$handle)
-totfol<-aggregate(tot_fol~handle,data=totfol,FUN=max)
-dim(totfol)
-
-
-#This is to get the additional reps that we missed the first time:
-filenames1<-list.files(path="house_out_add/", pattern="*.csv") #Reps missed the first time around
-
-
-scores<-read.csv("scores.csv", header=TRUE)
-scores<-subset(scores, select=c("V1","score","tot_fol"))
-
-#Open the file that contains cleaned up names and nat scores:
-mydata<-read.csv("scores_wnames.csv", header=TRUE)
-mydata$score<-NULL
-head(mydata)
-dim(mydata)
-
-mydata1<-merge(mydata, scores, by.x="V1", by.y="V1", all.x=TRUE)
-write.csv(mydata1, "scores_wnames_and_tots.csv", row.names = FALSE)
 
